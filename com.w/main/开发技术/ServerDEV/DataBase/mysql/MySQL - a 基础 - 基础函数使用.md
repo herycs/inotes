@@ -1,0 +1,56 @@
+# MySql
+
+> 命令限制：
+>
+> - 大小写不敏感
+> - 一行可书写多个命令，以分号隔开
+> - 提示符<kbd>></kbd>变为<kbd>-></kbd>，表明MySQL在等待输入完整
+
+## 获取信息
+
+查询服务器版本号：
+
+```sql
+SELECT VERSION();
+```
+
+查询当前日期：
+
+```sql
+SELECT　CURRENT_DATE;
+SELECT NOW();
+```
+
+查询用户：
+
+```sql
+SELECT USER();
+```
+
+## 查询辅助
+
+### ifnull
+
+```sql
+//若为空则返回后面的null
+select 
+    ifnull ((select distinct Salary from Employee order by Salary desc limit 1 offset 1),null)
+    as SecondHighestSalary;
+```
+
+### limit
+
+```sql
+limit n, m
+限制返回第n个位置到m个位置间的数据
+索引从0开始，所以想要第n个需要使用n-1
+```
+
+### offset
+
+```sql
+当前位置偏移几个
+-- 偏移n个
+offset n
+```
+
