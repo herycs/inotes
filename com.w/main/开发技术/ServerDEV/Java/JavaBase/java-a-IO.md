@@ -28,13 +28,9 @@
 
 > 传统javaio包，Block IO, 同步阻塞, 并发处理能力低
 
-实例：
+实例：Socket，OS 运行的线程数量是有限的，狼多肉少的环境，必然会有处于等待状态的，而等待的策略就是（阻塞）
 
-- Socket，OS 运行的线程数量是有限的，狼多肉少的环境，必然会有处于等待状态的，而等待的策略就是（阻塞）
-
-适用：
-
-- 服务端不活跃线程较多 ---> 单线程处理
+适用：服务端不活跃线程较多 ---> 单线程处理
 
 多个线程链接，阻塞情况下不会处理客户端请求，这是不允许的
 
@@ -138,3 +134,33 @@
 - 异步IO模型中，IO操作的两个阶段都不会阻塞用户线程，这两个阶段都是由内核自动完成，然后发送一个信号告知用户线程操作已完成。用户线程中不需要再次调用IO函数进行具体的读写。
 
 > 推荐[阅读](https://www.ibm.com/developerworks/cn/java/j-lo-javaio/index.html)
+
+# Java的NIO
+
+> jdk1.7新增
+
+这里的NIO指的是NewIO，和旧的IO基于Stream流操作而言，NIO基于缓冲区操作。
+
+核心部件：Channel， Buffer，Selector
+
+其中，Channel提供从文件或者网络获取数据的渠道，Buffer用于作为IO缓冲区，Selector作为一个管理器。
+
+## Channel
+
+FileChannel(文件操作)
+
+DatagramChannel（UDP）
+
+SocketChannel & ServerSocketChannel（TCP，client&Server）
+
+## Buffer
+
+底层连续数组
+
+Buffer是一个抽象类，常见子类实现有：ByteBuffer、IntBuffer、 CharBuffer、 LongBuffer、 DoubleBuffer、FloatBuffer、
+
+ShortBuffer
+
+## Selector
+
+Selector 能够检测**多个**注册的通道上是否有事件发生，如果有事件发生，便获取事件然后针对每个事件进行相应的响应处理。如此也就可以使用单线程管理多个连接，大大减少了资源的耗费，也减少了原有维护一个连接对应一个线程的上下文切换。
