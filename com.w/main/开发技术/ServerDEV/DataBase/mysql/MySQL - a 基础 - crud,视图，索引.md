@@ -314,7 +314,19 @@ select * from student where Sage = 19;
 
 > 子查询出现在from语句中
 
+### 多表查询
 
+#### 合并结果集 union
+
+#### 连接查询
+
+- ##### 内连接 join, on
+
+- ##### 外连接 left join, right join, full join(mysql不支持)
+
+- ##### 自连接 natual join
+
+#### 子查询
 
 ## 索引
 
