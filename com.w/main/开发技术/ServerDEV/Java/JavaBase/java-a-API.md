@@ -99,6 +99,10 @@ String toLowerCase() 将指定字符串全部转换为小写
 
 栈当前深度
 
+## Queue
+
+可以使用队列构建堆
+
 ## Deque
 
 ## Map
@@ -106,3 +110,7 @@ String toLowerCase() 将指定字符串全部转换为小写
 ## Set
 
 ## List
+
+### LinkedList
+
+removeLast()
