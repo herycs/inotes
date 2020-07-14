@@ -24,7 +24,7 @@ jdk1.7中的实现：数组加链表
 
 1.7的hash方法
 
-> 考：[ITeye](https://www.iteye.com/topic/709945)
+> 参考：[ITeye](https://www.iteye.com/topic/709945)
 
 ```java
 //这种写法使得有一位一旦有变化就会引发整个值的改动

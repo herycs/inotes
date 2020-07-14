@@ -534,6 +534,22 @@ lock指令作用：
 
 正因为以上操作使用了volatile，而volatile又具有其特性，CAS借助对volatile的操作实现了volatile所具有的内存语义
 
+自旋周期
+
+> [参考博客](https://blog.csdn.net/zqz_zqz/article/details/70233767)
+
+JDK1.6中-XX:+UseSpinning开启
+-XX:PreBlockSpin=10 为自旋次数
+JDK1.7后，去掉此参数，由jvm控制
+
+- 如果平均负载小于CPUs则一直自旋
+- 如果有超过(CPUs/2)个线程正在自旋，则后来线程直接阻塞
+- 如果正在自旋的线程发现Owner发生了变化则延迟自旋时间（自旋计数）或进入阻塞
+- 如果CPU处于节电模式则停止自旋
+- 自旋时间的最坏情况是CPU的存储延迟（CPU A存储了一个数据，到CPU B得知这个数据直接的时间差）
+- 自旋时会适当放弃线程优先级之间的差异
+    
+
 ### volatile使用优化
 
 - 追加字节使其满足当前处理设备的高速缓存行

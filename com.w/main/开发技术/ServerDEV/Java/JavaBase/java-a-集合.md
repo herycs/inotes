@@ -1,13 +1,13 @@
 # 集合
 
-### Collection和Collections的区别
+## Collection和Collections的区别
 
 - Collection 是一个集合接口
 - Collections 是一个包装类。 它包含有各种有关集合操作的静态多态方法，不能实例化。
 
 常用集合类的使用
 
-### Set和List区别
+## Set和List区别
 
 List,Set都是继承自Collection接口。都是用来存储一组相同**类型**的元素的。
 
@@ -16,7 +16,7 @@ List,Set都是继承自Collection接口。都是用来存储一组相同**类型
 - Set特点：元素无放入顺序，元素不可重复。
     - set在元素插入时是要有一定的方法来判断元素是否重复的
 
-### ArrayList和LinkedList和Vector的区别
+## ArrayList和LinkedList和Vector的区别
 
 都实现了List 接口，使用方式也很相似,主要区别在于因为实现方式的不同,所以对不同的操作具有不同的效率。
 
