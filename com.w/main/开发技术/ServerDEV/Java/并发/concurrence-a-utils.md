@@ -255,13 +255,24 @@ private final void unlockRoot() { lockState = 0; }
 
 ## 阻塞队列
 
-- ArrayBlockingQueue（有界）
-- LinkedBlockingQueue（有界）
-- PriorityBlockingQueue（无界）
-- DelayQueue（无界）
+- ArrayBlockingQueue（有界-数组实现）
+- 
+- LinkedBlockingQueue（有界-链表实现）
+- LinkedTransferQueue（无界-链表实现）
+- LinkedBlockingDeque（双向阻塞-链表实现）
+- 
+- PriorityBlockingQueue（无界-支持优先级排序）
+- DelayQueue（无界-优先级队列实现）
 - SynchronousQueue（不存储元素）
-- LinkedTransferQueue（无界）
-- LinkedBlockingDeque（双向阻塞）
+
+PriorityBlockingQueue（无界-支持优先级排序）
+
+- 自定义实现compareTo()定义排序方式
+
+DelayQueue（无界-优先级队列实现）
+
+- 队列中元素需要实现DelayQueue
+- 支持延时获取，只有当时间够了才允许从队列中获取当前元素
 
 #### 实现原理
 
