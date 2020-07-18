@@ -139,7 +139,7 @@ public interface Lock {
 }
 ```
 
-## 队列同步器
+## AQS队列同步器
 
 > AbstractQueuedSynchronizer(AQS)
 >
@@ -548,7 +548,7 @@ JDK1.7后，去掉此参数，由jvm控制
 - 如果CPU处于节电模式则停止自旋
 - 自旋时间的最坏情况是CPU的存储延迟（CPU A存储了一个数据，到CPU B得知这个数据直接的时间差）
 - 自旋时会适当放弃线程优先级之间的差异
-    
+  
 
 ### volatile使用优化
 

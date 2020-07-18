@@ -208,6 +208,21 @@ setAccessible()取消语言访问检查可以在一定程度上提升运行速�
 
 - 在Java中，类使用class定义，接口使用interface定义，注解和接口的定义差不多，增加了一个@符号，即@interface
 
+Target值
+
+```java
+public enum ElementType {
+    TYPE,//类，接口（包括注解类型）或枚举的声明
+    FIELD,//属性的声明
+    METHOD,//方法的声明	
+    PARAMETER,//方法形式参数声明
+    CONSTRUCTOR,//构造方法的声明
+    LOCAL_VARIABLE,//局部变量声明
+    ANNOTATION_TYPE,//注解类型声明
+    PACKAGE//包的声明
+}
+```
+
 ## 操作
 
 注解类定义

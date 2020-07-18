@@ -49,38 +49,38 @@ Iterator提供以下几个操作：
 
 ### HashMap
 
-- 非同步
-- 键：至多有一个NULL
-- 值：不限
+> - 非同步
+> - 键：至多有一个NULL
+> - 值：不限
 
 ### HashTable
 
-- 同步
-- 线程不安全
-- 键：不为NULL
-- 值：不为NULL
-- 锁：锁整个Table
+> - 同步
+> - 线程不安全
+> - 键：不为NULL
+> - 值：不为NULL
+> - 锁：锁整个Table
 
 ### ConcurrentHashMap
 
-- 同步
-- 线程安全
-- 锁：（jdk1.7）分段锁（Segment），锁住一部分；jdk1.8-node节点锁，粒度小
+> - 同步
+> - 线程安全
+> - 锁：（jdk1.7）分段锁（Segment），锁住一部分；jdk1.8-node节点锁，粒度小
 
 ### LinkedHashMap
 
 > HashMap 链表版
 
-- 非同步
-- 键：至多有一个NULL
-- 值：不限
+> - 非同步
+> - 键：至多有一个NULL
+> - 值：不限
 
 ### TreeMap
 
 > 实现：SortMap
 
-- 非同步
-- 键：不为NULL
+> - 非同步
+> - 键：不为NULL
 
 内部数据有序，默认升序，可指定排序的比较器
 
@@ -154,3 +154,20 @@ Iterator提供以下几个操作：
 
 - HashMap允许存在一个为null的key，多个为null的value 。
 - hashtable的key和value都不允许为null。
+
+# 线程安全的集合
+
+CopyOnWrite:写入时复制
+
+```java
+//对于List接口
+Collections.synchronizedList(new ArrayList<>());
+CopyOnWriteArrayList<Object> objects = new CopyOnWriteArrayList<>();
+
+//对于Set接口
+Collections.synchronizedSet(new HashSet<>());
+CopyOnWriteArraySet<Object> objects1 = new CopyOnWriteArraySet<>();
+
+//对于Map接口,HashTable和ConcurrentHashMap都是线程安全的
+Collections.synchronizedMap(new HashMap<>());
+```

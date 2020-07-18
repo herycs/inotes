@@ -80,7 +80,7 @@ alter table sss add constraint age check(age > 0 and age < 40);
 
 ```sql
   -- 删除表
-drop table tb_demo1;
+  drop table tb_demo1;
   -- 删除列
   alter table tb_demo1 drop name1;
 ```
@@ -322,7 +322,7 @@ select * from student where Sage = 19;
 
 - ##### 内连接 join, on
 
-- ##### 外连接 left join, right join, full join(mysql不支持)
+- ##### 外连接 left join, right join, full join
 
 - ##### 自连接 natual join
 

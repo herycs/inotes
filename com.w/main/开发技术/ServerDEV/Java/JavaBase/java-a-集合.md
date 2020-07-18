@@ -39,6 +39,9 @@ Vector是java.util包中的一个类。 SynchronizedList是java.util.Collections
 多线程的场景中可以直接使用Vector类，也可以使用Collections.synchronizedList(List list)方法来返回一个线程安全的List
 
 Add方法
+
+vector锁定的是this，synchronizedList锁定的是mutex(遍历，手动加锁)
+
 - **1.Vector使用同步方法实现，synchronizedList使用同步代码块实现。 **
 - **2.两者的扩充数组容量方式不一样（两者的add方法在扩容方面的差别也就是ArrayList和Vector的差别。**
 

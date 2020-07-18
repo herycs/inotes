@@ -1,10 +1,10 @@
 # Mysql 数据库应用与开发——笔记1
 
-# 1.基础类型
+# 基础类型
 
-## 1.1基本字符集
+## 基本字符集
 
-1.1.1查看
+查看
 
 > 查看所有字符集
 
@@ -18,59 +18,25 @@ show character set;
 show collation like 'latin1%';
 ```
 
-1.2数据类型
+数据类型
 
-1.3运算符、表达式
+运算符、表达式
 
-1.4常用函数
+常用函数
 
-# 2.基本操作
+# 数据检索
 
-## 2.1mysql基本数据库了解
+## 基本查询
 
-## 2.2数据库设计
+## 单表查询
 
-## 2.3数据库创建管理
+## 聚合函数查询
 
-## 2.4存储引擎
+## 多表连接
 
-# 3.表和数据完整性
+## 子查询
 
-## 3.1数据库表管理
-
-3.1.1存储引擎表空间
-
-3.1.2表操作
-
-3.1.3临时表管理
-
-## 3.2表数据操作
-
-## 3.3表完整性
-
-3.3.1非空
-
-3.3.2主键
-
-3.3.3外键
-
-3.3.4检查约束
-
-3.3.5唯一性约束
-
-# 4.数据检索
-
-## 4.1基本查询
-
-## 4.2单表查询
-
-## 4.3聚合函数查询
-
-## 4.4多表连接
-
-## 4.5子查询
-
-## 4.6正则表达式模糊查询
+## 正则表达式模糊查询
 
 > 语法格式：select...from where ... regexp "";
 
@@ -106,21 +72,12 @@ show collation like 'latin1%';
   select * from scc where Sno regexp "2{1,2}";
   ```
 
-  
 
-# 5.索引视图
+# 基础操作
 
-## 5.1索引
+## 基础编程
 
-## 5.2视图
-
-## 5.3视图应用
-
-# 6.基础操作
-
-## 6.1基础编程
-
-6.1.1自定义变量
+自定义变量
 
 - 定义用户变量set或select
 
@@ -130,7 +87,7 @@ show collation like 'latin1%';
 >
 > select @ value_name := (select * from table_name);
 
-6.1.2局部变量
+局部变量
 
 - declare 声明局部变量
 
@@ -140,7 +97,7 @@ show collation like 'latin1%';
 
 - 局部变量的范围仅限于存储程序中（函数，触发器，存储过程等），且在使用时不可将名称定义为表字段名，否则得不出预期结果
 
-6.1.3定界符delimiter
+定界符delimiter
 
 > 为了解决遇到 ; 语句就执行的情况
 
@@ -148,7 +105,7 @@ show collation like 'latin1%';
 
   示例：delimiter // select * from table_1 //
 
-6.1.4begin...end语句块
+begin...end语句块
 
 - 使用：
 
@@ -160,23 +117,23 @@ show collation like 'latin1%';
 
    end
 
-6.1.5 预处理
+预处理
 
-6.1.5.1基本语句
+基本语句
 
 - prepare
 - execute
 - deallocate
 
-6.1.5.2使用步骤
+使用步骤
 
 - 创建
 - 使用
 - 释放
 
-## 6.2自定义函数
+## 自定义函数
 
-### 6.2.1创建函数
+### 创建函数
 
 > 修改结束认定符以避免函数返回语句后的分号被认定为结束符，从而语句被执行产生错误
 >
@@ -204,13 +161,13 @@ end
 delimiter ;
 ```
 
-### 6.2.2使用函数
+### 使用函数
 
 ```
 select function_name(12, 13);
 ```
 
-### 6.2.3查看函数
+### 查看函数
 
 ```sql
 查看指定数据库中的所有自定义函数
@@ -231,22 +188,22 @@ select * from information_schema.routines
 
 ```
 
-### 6.2.4修改函数
+### 修改函数
 
 ```sql
 格式
 alter function func_name[characters -]
 ```
 
-### 6.2.5删除函数定义
+### 删除函数定义
 
 ```sql
 drop function func_name;
 ```
 
-## 6.3控制流语句
+## 控制流语句
 
-### 6.3.1 if
+### if
 
 ```sql
 格式（其中“[]”中为可选并非使用时要带上 []）
@@ -258,7 +215,7 @@ if condition then
 ...
 ```
 
-### 6.3.2 case
+### case
 
 ```
 格式
@@ -270,7 +227,7 @@ case value
 end case
 ```
 
-### 6.3.3 条件判断函数
+### 条件判断函数
 
 - if()
 
@@ -295,9 +252,9 @@ end case
   else 其他值
   ```
 
-## 6.4循环语句
+## 循环语句
 
-### 6.4.1 while
+### while
 
 ```sql
 while condition do
@@ -305,7 +262,7 @@ while condition do
 end while;
 ```
 
-### 6.4.2 loop
+### loop
 
 ```sql
 loop
@@ -313,7 +270,7 @@ loop
 end loop
 ```
 
-### 6.4.3 repeat
+### repeat
 
 ```sql
 repeat
@@ -322,24 +279,24 @@ until condition
 end repeat
 ```
 
-# 7.存储过程，游标，触发器
+# 存储过程，游标，触发器
 
-## 7.1存储过程
+## 存储过程
 
-7.1.1创建存储过程
+创建存储过程
 
 ```sql
 存储过程有三类参数，in(输入), out(输出), inout(输入输出)
 create produce name(params);
 ```
 
-7.1.2调用存储过程
+调用存储过程
 
 ```sql
 call [db.name]sp_name(params);
 ```
 
-7.1.3查看定义
+查看定义
 
 ```sql
 show produce status like 'do_%';
@@ -351,7 +308,7 @@ select * from information_schema.routines where routine_name = 'do';
 show create produce do;
 ```
 
-7.1.4条件和处理程序定义
+条件和处理程序定义
 
 ```sql
 定义条件
@@ -381,7 +338,7 @@ sqlstate [value]sqlstate_value|condition_name|sqlwarning|not found|sqlexception|
 -- sp_statement:自定义错误处理程序
 ```
 
-7.1.5修改存储过程
+修改存储过程
 
 ```sql
 修改参数
@@ -391,17 +348,17 @@ alter produce sp_name[characteristic ...]
 alter procedure do_name modifies sql data sql security invoker;
 ```
 
-7.1.6删除存储过程
+删除存储过程
 
 ```sql
 drop produce[if exits] sp_name
 ```
 
-## 7.2游标处理结果集
+## 游标处理结果集
 
 > 流程：声明游标->打开游标->提取数据，处理数据->关闭游标
 
-7.2.1声明游标
+声明游标
 
 ```sql
 declare cursor_name cursor for select_statement;
@@ -411,13 +368,13 @@ declare teach_cursor cursor
 	for select name, age from students;
 ```
 
-7.2.2打开游标
+打开游标
 
 ```sql
 open cursor_name;
 ```
 
-7.2.3游标中提取数据
+游标中提取数据
 
 > 注意：
 >
@@ -437,15 +394,15 @@ open cursor_name;
 fetch cursor_name into var1[,var2,..]
 ```
 
-7.2.4关闭游标
+关闭游标
 
 ```sql
 close cursor_name
 ```
 
-## 7.3触发器
+## 触发器
 
-7.3.1触发器建立
+触发器建立
 
 > 触发器执行顺序，before，执行操作，after
 >
@@ -474,7 +431,7 @@ create trigger_name trigger_time trigger_event on table_name for each row trigge
 -- trigger_statement:触发程序激活时执行的语句
 ```
 
-7.3.2触发器注意事项
+触发器注意事项
 
 - 触发器中select语句不能返回结果集
 - 同一个表不能创建两个相同触发时间触发时间的触发程序
@@ -487,15 +444,15 @@ create trigger_name trigger_time trigger_event on table_name for each row trigge
 - before 中auto_increment字段的new值为0不是插入操作自动生成的自增型字段值
 - 添加触发器建议进行详细测试
 
-7.3.3删除触发器
+删除触发器
 
 ```sql
 drop trigger[schema.]trigger_name
 ```
 
-## 7.4事件及应用
+## 事件及应用
 
-7.4.1认识事件调度
+认识事件调度
 
 - 开启事件调度
 
@@ -513,7 +470,7 @@ drop trigger[schema.]trigger_name
   select @@event_scheduler
   ```
 
-7.4.2使用事件
+使用事件
 
 - 创建
 
@@ -554,11 +511,11 @@ drop trigger[schema.]trigger_name
   drop event[if exists][database name.]event_name
   ```
 
-# 8.并发事务与锁
+# 并发事务与锁
 
-## 8.1事务
+## 事务
 
-8.1.1特性
+特性
 
 - 原子性
 
@@ -568,39 +525,39 @@ drop trigger[schema.]trigger_name
 
 - 持久性
 
-8.1.2事务分类
+事务分类
 
 - 自动提交事务
 - 用户定义事务
 - 分布式事务
 
-## 8.1事务管理
+## 事务管理
 
-8.1.1关闭自动提交事务
+关闭自动提交事务
 
 ```sql
 set @@autocomit = 0;
 ```
 
-8.1.2启动事务
+启动事务
 
 ```sql
 start transaction|begin work
 ```
 
-8.1.3结束事务
+结束事务
 
 ```sql
 commit [work][and[no]chain] [[no] release]
 ```
 
-8.1.4回滚事务
+回滚事务
 
 ```sql
 rollback [work][and[no]chain] [[no] release]
 ```
 
-8.1.5设置事务检查点
+设置事务检查点
 
 ```sql
 savepoint identifier
@@ -610,23 +567,23 @@ rollback [work] to savepoint identifer
 -- 事务回滚到某个保存点，该保存点后的保存点会被删除
 ```
 
-## 8.2事务并发
+## 事务并发
 
-8.2.1设置事务隔离级别
+设置事务隔离级别
 
 ```sql
 set {global|session} transaction isolation level{read uncommitted|read committed|repeatable read|serializable}
 ```
 
-8.2.2获取当前隔离级别
+获取当前隔离级别
 
 ```sql
 select @@tx_isolation
 ```
 
-## 8.3管理锁
+## 管理锁
 
-8.3.1锁的了解
+锁的了解
 
 - 锁的粒度
 - 隐式和显式锁
@@ -634,7 +591,7 @@ select @@tx_isolation
 - 锁的钥匙
 - 锁的生命周期
 
-8.3.2锁定与解锁
+锁定与解锁
 
 - 锁定表
 
@@ -650,15 +607,15 @@ select @@tx_isolation
   unlock tables;
   ```
 
-8.3.3锁分类
+锁分类
 
-8.3.3.1表锁
+表锁
 
 - 读锁
 
 - 写锁
 
-8.3.3.2行锁
+行锁
 
 - 排他锁
 - 共享锁
@@ -666,13 +623,13 @@ select @@tx_isolation
   - 意向共享锁
   - 意向排它锁
 
-8.3.3.3页锁
+页锁
 
-## 8.4死锁管理
+## 死锁管理
 
 - 一般将较小的事务进行回滚，让较大锁完成任务
 
-## 8.5注意事项
+## 注意事项
 
 - 锁粒度越小，并发性能要求越高
 - 事务中，避免一个事务中使用不同引擎的表
@@ -683,13 +640,13 @@ select @@tx_isolation
 - 缩短锁的生命周期
 - 事务中尽量按照一定顺序访问数据库对象
 
-# 9.权限管理及控制
+# 权限管理及控制
 
-## 9.1mysql权限管理系统原理
+## mysql权限管理系统原理
 
-### 9.1.1 mysql权限表
+###  mysql权限表
 
-9.1.1.1 user表
+user表
 
 - 查看mysql数据库提供的权限管理
 
@@ -699,27 +656,27 @@ select @@tx_isolation
   desc user;
   ```
 
-9.1.1.2 db表和host表
+db表和host表
 
 - db表存储用户对某个数据库的操作权限，决定用户可以从哪个主机存取某个数据库
 - host表存储主机对数据库的操作权限，不受grant和revoke影响
 
-9.1.1.3 tables_priv表和column_priv表
+tables_priv表和column_priv表
 
 - tables_priv对单个表进行权限控制
 - column_priv对表的操作权限
 
-9.1.1.4 procs_priv表
+ procs_priv表
 
 > 对存储过程及存储权限进行控制
 
-### 9.1.2权限工作原理
+### 权限工作原理
 
-9.1.2.1连接核实
+连接核实
 
 > 基于用户提供信息验证用户身份
 
-9.1.2.2请求核实
+请求核实
 
 > 得到连接许可后，对用户的所有操作权限进行检查
 
@@ -729,11 +686,11 @@ select @@tx_isolation
 
   <kbd>收到用户请求操作</kbd>--><kbd>user表中权限</kbd>--><kbd>db和host表中权限</kbd>--><kbd>tables_priv中权限</kbd>--><kbd>column_priv中权限</kbd>--><kbd>第六步，不允许用户请求的操作</kbd>
 
-## 9.2账户管理
+## 账户管理
 
-### 9.2.1 普通用户管理
+### 普通用户管理
 
-9.2.1.1用户创建
+用户创建
 
 - create语句
 
@@ -785,13 +742,13 @@ grant
 				identified by '123456';
 ```
 
-9.2.1.2查看用户
+查看用户
 
 ```sql
 select user 'userDemo1' from user;
 ```
 
-9.2.1.3删除用户
+删除用户
 
 - drop
 
@@ -821,7 +778,7 @@ select user 'userDemo1' from user;
   	where host = 'host_name' and user = 'user_name';
   ```
 
-9.2.1.4修改用户名称
+修改用户名称
 
 ```sql
 rename user old_name to new_name
@@ -829,9 +786,9 @@ rename user old_name to new_name
 	[,..]
 ```
 
-### 9.2.2 登录及修改密码
+### 登录及修改密码
 
-9.2.2.1 登录mysql服务器
+登录mysql服务器
 
 ```sql
 mysql -h hostname|hostIP -P port -u username -p DatabaseName -e 'SQL Statements';
@@ -846,7 +803,7 @@ mysql -h hostname|hostIP -P port -u username -p DatabaseName -e 'SQL Statements'
 -- 结束符: 以；或者 \g结束
 ```
 
-9.2.2.2修改用户密码
+修改用户密码
 
 > 可使用mysqladmin，update或set password实现
 
@@ -868,7 +825,7 @@ mysql -h hostname|hostIP -P port -u username -p DatabaseName -e 'SQL Statements'
   set password [for user] = password('new_password');
   ```
 
-## 9.3权限管理
+## 权限管理
 
 9.3.1权限层级
 
@@ -878,9 +835,9 @@ mysql -h hostname|hostIP -P port -u username -p DatabaseName -e 'SQL Statements'
 - 列层级
 - 子程序层级
 
-9.3.2授权管理
+授权管理
 
-9.3.2.1 授权grant
+授权grant
 
 ```sql
 grant priv_type[(column_list)]
@@ -893,7 +850,7 @@ grant priv_type[(column_list)]
                    [with grant option]
 ```
 
-9.3.2.2 收回权限revoke
+收回权限revoke
 
 ```sql
 收回指定权限
@@ -911,15 +868,15 @@ revoke all privilages, grant option
 	[,...n];
 ```
 
-9.3.2.3查看权限
+查看权限
 
 ```sql
 show grants for 'username'@'hostname'
 ```
 
-## 9.4数据库安全常见问题
+## 数据库安全常见问题
 
-9.4.1权限更改合时生效
+权限更改合时生效
 
 ```sql
 1.管理员身份进入命令行
@@ -932,7 +889,7 @@ mysqladmin flush - privileges;
 mysqladmin reload;
 ```
 
-9.4.2账户密码设置
+账户密码设置
 
 > 不需要password()加密密码,会自动加密
 >
@@ -956,7 +913,7 @@ mysqladmin reload;
 5.update更新已有账户密码
 ```
 
-9.4.3关于mysql中匿名登录
+关于mysql中匿名登录
 
 > mysql在windows下一般创建了两个root账户
 
@@ -968,60 +925,60 @@ mysqladmin reload;
 2.删除匿名账户
 ```
 
-# 10.备份与恢复
+# 备份与恢复
 
-## 10.1备份，恢复概述
+## 备份，恢复概述
 
-10.1.1故障原因
+故障原因
 
 - 系统故障
 - 事务故障
 - 介质故障
 
-10.1.2备份分类
+备份分类
 
-10.1.2.1按备份时服务器是否在线分
+按备份时服务器是否在线分
 
 - 热备份
 - 温备份
 - 冷备份
 
-10.1.2.3备份内容分
+备份内容分
 
 - 逻辑备份
 - 物理备份
 
-10.1.2.4备份涉及的数据
+备份涉及的数据
 
 - 完整备份
 - 增量备份
 - 差异备份
 
-10.1.3备份时机
+备份时机
 
 - 创建数据库，添加数据后
 - 创建索引后
 - 清理事务日志后
 - 执行无日志操作后
 
-10.1.4恢复方法
+恢复方法
 
 - 数据库备份
 - 二进制日志
 - 数据库复制
 
-## 10.2数据备份
+## 数据备份
 
-10.2.1 mysqldump命令
+mysqldump命令
 
-10.2.1.1备份数据库或表
+备份数据库或表
 
 ```sql
 mysqldump -u user -h host -p password
 	-- databasename[all -databases][tablename= ,[tablename= ...]] > filename.sql
 ```
 
-10.2.1.2备份多个数据库
+备份多个数据库
 
 ```sql
 mysqldump -u user -h host -p 
@@ -1029,25 +986,23 @@ mysqldump -u user -h host -p
 -- 多个数据库名空格隔开
 ```
 
-10.2.2直接复制整个数据库目录
+直接复制整个数据库目录
 
-10.2.3 mysqlhotcopy工具快速复制
+mysqlhotcopy工具快速复制
 
 ```sql
 [root@localhost ~] # mysqlhotcopy [option] dbName1 dbName2 ... backupDir/
 ```
 
-## 10.3数据恢复
+## 数据恢复
 
-10.3.1执行相应的备份文件
+执行相应的备份文件
 
 ```sql
 mysql -u user -p[databasename]<filename.sql;
 ```
 
-10.3.2使用source恢复表和数据库
-
-10.3.2.1恢复表
+使用source恢复表和数据库
 
 ```sql
 mysql命令行:
@@ -1055,20 +1010,20 @@ mysql命令行:
 2.执行命令source d:/mysqlDemo1.sql
 ```
 
-10.3.2.2恢复数据库
+恢复数据库
 
 ```sql
 1.进入数据库
 2.执行source filename.sql
 ```
 
-## 10.4数据库迁移
+## 数据库迁移
 
-10.4.1相同版本数据库迁移
+相同版本数据库迁移
 
 > 迁移前后数据库主版本不同，复制数据库目录（只有数据库表都是MyISAM时才可以）
 
-10.4.2不同版本的数据库之间的迁移
+不同版本的数据库之间的迁移
 
 低版本迁移至高版本
 
@@ -1080,11 +1035,11 @@ InnoDB：使用mysqldump命令实现
 
 建议使用mysqldump命令实现
 
-10.4.3不同类型数据库迁移
+不同类型数据库迁移
 
 > 没有普遍的实现方法
 
-10.4.4数据库迁移至新服务器
+数据库迁移至新服务器
 
 ```sql
 mysqldump -u username -p password databasename | mysql - host = hostname -c databasename
@@ -1099,21 +1054,21 @@ mysqldump -u username -p password databasename | mysql - host = hostname -c data
 -- -e, -extend-insert:使用全新多行insert语法（给出更紧缩更快的插入语句）
 ```
 
-## 10.5表的导入与导出
+## 表的导入与导出
 
-10.5.1 select...into outfile导出文件
+select...into outfile导出文件
 
 ```sql
 select [columnlist] from table [where codition] into outfile'filename' option
 ```
 
-10.5.2 mysql命令导出文本文件
+mysql命令导出文本文件
 
 ```sql
 mysql -u root -pPassword -e| -- excute = "select statement" databasename > c:\name.txt;
 ```
 
-10.5.3  load data infile
+load data infile
 
 ```sql
 load data[low_prioriy|concurrent]
@@ -1126,17 +1081,17 @@ load data[low_prioriy|concurrent]
 -- replace|ignore:指定了replace,当文件中出现与原有行相同的唯一关键字值时，输入航替换原有行
 ```
 
-# 11.性能优化
+# 性能优化
 
-## 11.1优化数据库服务器
+## 优化数据库服务器
 
-11.1.1优化服务器硬件
+优化服务器硬件
 
-11.1.2修改my.ini文件
+修改my.ini文件
 
-11.1.3控制台优化
+控制台优化
 
-11.1.3.1查询主要性能参数
+查询主要性能参数
 
 ```sql
 show status like 'value';
@@ -1144,7 +1099,7 @@ show status like 'value';
 show variables like 'value';
 ```
 
-11.1.3.2设置性能指标参数
+设置性能指标参数
 
 ```sql
 1.查看变量
@@ -1154,108 +1109,108 @@ show variables like '%query_cache%';
 示例：set @@global.query_cache_limit = 67108864b;
 ```
 
-## 11.2优化查询
+## 优化查询
 
-### 11.2.1分析查询语句
+### 分析查询语句
 
-11.2.1.1 explain 语句
+explain 语句
 
 ```sql
 explain select statement;
 ```
 
-11.2.1.2 describe语句
+describe语句
 
 ```
 describe select statements;
 ```
 
-### 11.2.2使用索引优化查询
+### 使用索引优化查询
 
-11.2.2.1 应用like关键字优化索引查询
+应用like关键字优化索引查询
 
-11.2.2.2查询语句中使用or关键字
+查询语句中使用or关键字
 
-11.2.2.3查询语句中使用多列索引
+查询语句中使用多列索引
 
-11.2.2.4索引字段上使用函数操作
+索引字段上使用函数操作
 
-### 11.2.3优化多表查询
+### 优化多表查询
 
-## 11.3优化数据结构
+## 优化数据结构
 
-### 11.3.1优化表结构
+### 优化表结构
 
-11.3.1.1字段很多的表分解为多个表
+字段很多的表分解为多个表
 
-11.3.1.2增加冗余字段
+增加冗余字段
 
-11.3.1.3合理设置表的数据类型和属性
+合理设置表的数据类型和属性
 
-### 11.3.2增加中间表
+### 增加中间表
 
-### 11.3.3优化插入记录速度
+### 优化插入记录速度
 
-11.3.3.1禁用索引
+禁用索引
 
 - 避免插入记录时对其排序，可在插入前禁用索引，插入后启用索引
 
-11.3.3.2禁用唯一性检查
+禁用唯一性检查
 
-11.3.3.3采用insert的优选方式
+采用insert的优选方式
 
 > 插入多条记录
 
 - 方法1:一条insert语句插入一条记录，执行多个insert实现多数据插入
 - 方法2（推荐）:一条insert语句插入多条语句，此方式减少了和数据库的连接，速度较快
 
-### 11.3.4分析表，检查表和优化表
+### 分析表，检查表和优化表
 
-11.3.4.1利用analyze语句分析表
+利用analyze语句分析表
 
-11.3.4.2使用check 语句检查表
+使用check 语句检查表
 
-11.3.4.3使用optimize优化表
+使用optimize优化表
 
-### 11.3.5优化慢查询
+### 优化慢查询
 
-### 11.3.6优化表设计
+### 优化表设计
 
-## 11.4查询高速缓存
+## 查询高速缓存
 
-11.4.1检验高速缓存是否开启
+检验高速缓存是否开启
 
 ```sql
 show variables like '%query_cache';
 ```
 
-11.4.2使用高速缓存
+使用高速缓存
 
 ```sql
 使用set命令设定有关值即可
 ```
 
-## 11.5优化性能的其它方面
+## 优化性能的其它方面
 
-11.5.1 limit 1:查询结果只有1行时可以提升速率
+limit 1:查询结果只有1行时可以提升速率
 
-11.5.2 少用select * from table_name，尽量明确字段
+少用select * from table_name，尽量明确字段
 
-11.5.3 不滥用sql自动转换
+不滥用sql自动转换
 
-11.5.4 避免在where子句中对null判断
+避免在where子句中对null判断
 
-11.5.5 避免在where子句中使用“！=”或"<>"操作符
+避免在where子句中使用“！=”或"<>"操作符
 
-11.5.6 避免where子句对字段进行表达式操作
+避免where子句对字段进行表达式操作
 
-11.5.7 避免使用in或not in
+避免使用in或not in
 
-# 12.日志文件管理
+# 日志文件管理
 
-## 12.1错误日志
+## 错误日志
 
-12.1.1启用和设置错误日志
+启用和设置错误日志
 
 ```sql
 将log-error添加到my.ini文件的[mysqld]组中
@@ -1266,21 +1221,21 @@ log-error=[path/[filename]]
 -- filename:日志文件名
 ```
 
-12.1.2查看错误日志
+查看错误日志
 
 ```sql
 show variables like 'log_error';
 ```
 
-12.1.3删除错误日志
+删除错误日志
 
 ```sql
 mysqladmin -u root -p flush - logs
 ```
 
-## 12.2二进制日志
+## 二进制日志
 
-12.2.1启用二进制日志
+启用二进制日志
 
 ```sql
 my.ini文件的log-ini文件的log-bin选项可以开启二进制日志
@@ -1291,7 +1246,7 @@ expire_logs_days = 10
 max_binlog_size = 100M
 ```
 
-12.2.2查看二进制日志
+查看二进制日志
 
 ```sql
 show binary logs;
@@ -1299,7 +1254,7 @@ show binary logs;
 mysqlbinlog filename.number
 ```
 
-12.2.3清理二进制日志
+清理二进制日志
 
 ```sql
 删除所有
@@ -1312,21 +1267,21 @@ purge {binary|master} logs to 'log_name'
 purge {binary|master} logs before 'date'
 ```
 
-12.2.4二进制日志恢复数据库
+二进制日志恢复数据库
 
 ```sql
 mysqlbinlog [option]filename|mysql -u user -p password
 ```
 
-12.2.5暂时停止二进制日志功能
+暂时停止二进制日志功能
 
 ```sql
 set sql_log_bin = {0|1}
 ```
 
-## 12.3通用查询日志
+## 通用查询日志
 
-12.3.1启动和设置通用查询日志
+启动和设置通用查询日志
 
 ```sql
 #my.ini文件
@@ -1338,22 +1293,22 @@ log[=path\[filename]]
 log
 ```
 
-12.3.2查看通用日志
+查看通用日志
 
 ```sql
 日志以文本文件存储，使用文本文件查看器查看
 ```
 
-12.3.3删除通用查询日志
+删除通用查询日志
 
 ```sql
 开启新通用日志可覆盖之前的日志
 mysqladmin -u root -p flush -logs
 ```
 
-## 12.4慢查询日志
+## 慢查询日志
 
-12.4.1启用慢查询
+启用慢查询
 
 ```sql
 #my.ini
@@ -1362,9 +1317,9 @@ log - slow - queries[=path\[filename]]
 long_query_time = n
 ```
 
-12.4.2操作慢查询日志
+操作慢查询日志
 
-12.4.3删除慢查询日志
+删除慢查询日志
 
 ```sql
 mysqladmin -u root -p flush - logs
