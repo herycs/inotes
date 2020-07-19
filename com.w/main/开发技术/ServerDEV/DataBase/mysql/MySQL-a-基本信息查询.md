@@ -1,4 +1,4 @@
-# MySql
+# MySql基本信息查询
 
 > 命令限制：
 >
@@ -25,6 +25,22 @@ SELECT NOW();
 
 ```sql
 SELECT USER();
+```
+
+## 基本字符集
+
+查看
+
+> 查看所有字符集
+
+```sql
+show character set;
+```
+
+> 查看校对原则
+
+```sql
+show collation like 'latin1%';
 ```
 
 ## 查询辅助

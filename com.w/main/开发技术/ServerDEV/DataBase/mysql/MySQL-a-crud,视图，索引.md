@@ -32,7 +32,7 @@ create database ss;
 drop database ss;
 ```
 
-### 表
+# 表
 
 指定数据库
 
@@ -40,7 +40,7 @@ drop database ss;
 use ss;
 ```
 
-#### 创建
+## 创建
 
 ```sql
 create table tb_demo1(
@@ -53,7 +53,7 @@ create table tb_demo2(
   );
 ```
 
-#### 增加
+## 增加
 
 ```sql
 -- 添加值
@@ -76,7 +76,7 @@ alter table tb_demo1 add constraint name1 unique tb_demo2(name2);
 alter table sss add constraint age check(age > 0 and age < 40);
 ```
 
-#### 删除
+## 删除
 
 ```sql
   -- 删除表
@@ -89,7 +89,7 @@ alter table sss add constraint age check(age > 0 and age < 40);
   delete from tb_demo1 where naem = "haung";
 ```
 
-#### 修改
+## 修改
 
 ```sql
   -- 修改表名
@@ -128,7 +128,9 @@ alter table sss add constraint age check(age > 0 and age < 40);
 > drop constraint:
 > -- 用于删除原有的约束条件
 
-#### 查找
+# 查找
+
+## 基本查询
 
 单表查找：
 
@@ -170,7 +172,7 @@ select * from tb_demo1 where age1 < 22 or name1 like "%w%";
 select * from tb_demo1 where not age1 < 22;
 ```
 
-### 排序结果
+排序结果
 
 order by
 
@@ -178,7 +180,7 @@ order by
 select * from tb_demo1 order by grade2 DESC;
 ```
 
-聚集函数
+## 聚集函数
 
 > distinct 表示取消重复值，
 >
@@ -212,7 +214,7 @@ having
 select grade2, count(age1) from tb_demo1 group by grade2 having count(age1) > 1;
 ```
 
-### 连接查询
+## 多表连接
 
 > 概念：先拼接，再查询
 >
@@ -286,7 +288,13 @@ select name1, age1, new_column, grade2, tb_demo2.name2 ,tb_demo2.grade3 from tb_
     );
     ```
 
-集合查询
+- ##### 内连接 join, on
+
+- ##### 外连接 left join, right join, full join
+
+- ##### 自连接 natual join
+
+## 集合查询
 
 并: union
 
@@ -314,23 +322,44 @@ select * from student where Sage = 19;
 
 > 子查询出现在from语句中
 
-### 多表查询
+## 模糊查询
 
-#### 合并结果集 union
+> 语法格式：select...from where ... regexp "";
 
-#### 连接查询
+| 匹配符 | 说明                             |
+| ------ | -------------------------------- |
+| ^      | 匹配文本开始字符                 |
+| $      | 匹配文本结束字符                 |
+| .      | 匹配任何单个字符                 |
+| *      | 匹配0或多个在它前面的字符        |
+| +      | 匹配前面的字符1或多次            |
+| <>     | 匹配指定的字符串                 |
+| []     | 匹配字符集合中的任意一个         |
+| {n,}   | 匹配前面的字符串至少n次          |
+| {m,n}  | 匹配前面的字符串至少m次，至多n次 |
+| [^]    | 匹配不在括号中的任何字符         |
 
-- ##### 内连接 join, on
+- 示例
 
-- ##### 外连接 left join, right join, full join
+    ```sql
+    select * from scc where Sno regexp "21$";
+    
+    select * from scc where Sno regexp "^20";
+    
+    select * from scc where Sno regexp ".15122";
+    
+    select * from scc where Sno regexp "[12151]";
+    
+    select * from scc where Sno regexp "[^12151]";
+    
+    select * from scc where Sno regexp "1{2,}";
+    
+    select * from scc where Sno regexp "2{1,2}";
+    ```
 
-- ##### 自连接 natual join
+# 索引
 
-#### 子查询
-
-## 索引
-
-### 创建索引
+## 创建索引
 
 基本语法：create <kbd>demo</kbd>index <kbd>name</kbd>on <kbd>name</kbd> <kbd>tb_demo1</kbd>(<kbd>column_1 </kbd> &nbsp; <kbd>sort</kbd>_, <kbd>column_2  </kbd>&nbsp;<kbd>sort</kbd>_);
 
@@ -350,24 +379,24 @@ select * from student where Sage = 19;
 >
 > sort取值: ASC升序，DESC降序，默认ASC
 
-### 修改索引
+## 修改索引
 
 ```sql
 alter index <old_name> rename to <new_name>;
 ```
 
-### 删除索引
+## 删除索引
 
 ```sql
 -- name_ 为索引名
 drop index name_;
 ```
 
-## 视图
+# 视图
 
 > #### 	视图是加了限制的sql操作,但其实质还是作用于数据库本身数据的
 
-### 创建
+## 创建
 
 > 创建视图时属性要不全选或者全不选,没第三个选择
 >
@@ -395,7 +424,7 @@ select Sno, Sname, Sage from student where Sdept = 'cs'
 with check option;
 ```
 
-### 删除
+## 删除
 
 ```sql
 -- 级联删除
@@ -403,7 +432,7 @@ with check option;
 drop view IS_SI cascade;
 ```
 
-### 查询
+## 查询
 
 > 视图查询时
 >
@@ -419,7 +448,7 @@ select Sno, Sage from IS_student where Sage < 20;
 select Sno, Sage from student where Sdept='IS' and Sage < 20;
 ```
 
-### 修改
+## 修改
 
 ```sql
 update IS_student set Sname = '233' where Sno = '201215122';

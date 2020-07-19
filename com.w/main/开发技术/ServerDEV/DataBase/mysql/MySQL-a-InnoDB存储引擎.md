@@ -470,6 +470,56 @@ NULL值
 
 InnoDB支持索引：B+，Hash，全文索引
 
+```sql
+       以下为索引字段信息
+       ---------主键索引信息
+        Table: t
+   Non_unique: 0
+     Key_name: PRIMARY
+ Seq_in_index: 1
+  Column_name: id
+    Collation: A
+  Cardinality: 2
+     Sub_part: NULL
+       Packed: NULL
+         Null:
+   Index_type: BTREE
+      Comment:
+Index_comment:
+	  ----------非主键索引信息
+       Table: t
+   Non_unique: 1
+     Key_name: tidx
+ Seq_in_index: 1
+  Column_name: name
+    Collation: A
+  Cardinality: 3
+     Sub_part: NULL
+       Packed: NULL
+         Null: YES
+   Index_type: BTREE
+      Comment:
+Index_comment:
+```
+
+其中字段解释分别是：
+
+> - Table：
+> - Non_unique: 1
+> - Key_name: tidx
+> - Seq_in_index: 索引列的位置
+> - Column_name: 索引列名称
+> - Collation: 列以什么方式存储在索引中，A or NULL
+>     - B+树索引总是A(排序的)
+>     - 使用了Heap存储引擎并建立了Hash索引则会显示NULL，不是排序的
+> - Cardinality: 索引中唯一值的数目估计值
+> - Sub_part: 是否列的部分索引，例如前100个数据索引则是100，全部数据则是NULL
+> - Packed: 关键字如何被压缩
+> - Null: 是否索引的列含有NULL
+> - Index_type: BTREE，索引类型
+> - Comment:注释
+> - Index_comment:索引注释
+
 ## 分类
 
 InnoDB中分为聚簇索引和辅助索引，内部都是B+树，区别是叶子节点存储到是否是一整行
@@ -480,13 +530,56 @@ InnoDB中分为聚簇索引和辅助索引，内部都是B+树，区别是叶子
 
 ### 辅助索引
 
-叶子节点不包含全部行数据，除了包含键值外还有一个书签，书签告诉存储引擎在哪可以查到数据（由于InnoDB是索引组织表，故书签就是相应的聚簇索引键）
+叶子节点不包含全部行数据，除了包含键值外还有一个书签，书签告诉存储引擎在哪可以查到数据（由于InnoDB是索引组织表，故书签就是相应的**聚簇索引键**）
 
 查数据流程：遍历辅助索引查找目标值（得到聚簇索引键），查找聚簇索引（得到实际数据）
 
 ## Cardinality
 
+值的更新：
+
+通过采样的方式
+
+- 表中1/16的数据已经发生改变
+- 等其他情况，innodb_stats_sample_pages设置每次采样页的数量（V1.2以前使用，default 8)
+
+索引中唯一值的数目的估计值，用于在优化器选择时提供参考，决定是否采用此索引，但这个值一般不是每次都更新，所以存在一定的误差
+
 当一个列的数据具有高度选择性时，就适合建立索引
+
+>  当这个值为NULL，可能导致索引建立了却没有使用，因此系统运行一段时间后建议使用analyze table
+
+## Fast Index Creation
+
+> 原表的alter过程：建立新的临时表---》原数据导入---》原表删除---》新表更名为原表
+
+快速索引创建方式------**限定于辅助索引的创建**
+
+辅助索引的创建，对表加S锁，创建过程中不需要重建表
+
+辅助索引删除，存储引擎更新内部视图，将辅助空间的内存标记为可用，同时删除数据库内部视图上对该表的索引定义即可
+
+优点：避免创建临时表
+
+缺点：由于创建过程加了S锁只能对表进行读取
+
+## Online Schema Change
+
+在线执行DDL，FaceBook实现的在线DDL方式
+
+事务创建过程中可以有事务对表进行读取等操作
+
+> 要求修改的列有主键
+>
+> OSC过程中允许不写入bin，所以主从同步可能有问题
+
+## Online DDL
+
+索引创建同时允许其他insert, delete，update操作
+
+通过选择参数，可选择修改表的方式（原有的拷贝方式或者其他）
+
+Lock 可以设定索引创建时对表的加锁情况{none, share, exclusive, default}
 
 ## 使用
 
@@ -534,6 +627,10 @@ InnoDB存储引擎对于其中的页如何进行查找的呢？
 
 InnoDB 1.2.x开始，存储引擎支持全文检索
 
+对每个分词都对应一个DOC_ID和Position，除此之外还有FIRST_DOC_ID，LAST_DOC_ID和DOC_COUNT
+
+另外对于索引删除的操作
+
 ### 倒排索引
 
 辅助表（Auxiliary Table）中存储了单词以及单词自身在一个或多个文档中的位置间的映射（一般使用关联数组实现）
@@ -556,189 +653,7 @@ Boolean 模式查询
 
 扩展查询
 
-# 锁
-
-lock与latch，latch轻量级锁（mutex互斥锁， rwlock读写锁），lock面向事务（锁数据库中的对象，表，页和行）
-
-## 分类
-
-### 行锁
-
-S Lock：共享，允许事务读一行数据
-
-X Lock：排他，允许事务删除或者更新一行数据
-
-### 表锁
-
-IS Lock：意向共享锁，事务想要获取某几行的共享锁
-
-IX Lock：意向排他锁，事务想要获取某几行的排它锁
-
-### 一致性非锁定读
-
-consistent nonlocking read，使用多版本并发控制获取当前执行时间数据库中的行的数据，若正在执行Update或Delete，会获取到一个快照数据（使用undo段实现）
-
-不同事务隔离级别情况下READ COMMITTED，REPEATABLE READ情况下使用非锁定一致性读，但快照要求不一样
-
-- READ COMMITTED------最新快照
-- REPEATABLE READ------事务开始的行数据版本
-
-### 一致性锁定读
-
-InnoDB提供的操作
-
-- select...for update
-- select...lock in share mode
-
-### 自增长&锁
-
-外键&锁
-
-对于外键，若没有加索引，则会自动增加一个索引避免表锁
-
-## 算法
-
-### 行锁
-
-- Record Lock：单记录锁
-- Gap Lock：间隙锁，不包含记录本身
-- Next-Key Lock：Gap Lock+ Record Lock实现对于一个范围的加锁，并锁定记录本身
-
-Record Lock：单记录锁总是锁索引记录，若没有索引，则使用隐式主键锁定
-
-Next-Key Lock：锁定区间，技术称为Next-Key Locking，是谓词锁的一种改进，设计目的为了解决Phantom Problem(幻像问题)
-
-​	若索引有3个值：3，7，9，则锁定区间是(-oo, 3], (3, 7], (7, 9], (9, +oo)
-
-另外还有（Previous-Key Locking)
-
-​	以上述为例，锁的区间是：(-oo, 3), [3, 7), [7, 9), [9, +oo)
-
-### Phantom Problem
-
-就是所谓的幻读，同一个事务下同一个操作执行两次结果却不相同
-
-## 锁问题
-
-### 脏读
-
-### 不可重复读
-
-### 丢失更新
-
-### 阻塞
-
-事务之间的阻塞
-
-### 死锁
-
-## 锁升级
-
-# 事务
-
-ACID，原子，隔离，一致和持久
-
-## 分类
-
-- 扁平事务
-- 带保存点的扁平事务
-- 链事务
-- 嵌套事务
-- 分布式事务
-
-### 扁平事务
-
-所有操作一个级别，操作都是原子的，共进退
-
-### 带保存点的扁平事务
-
-允许回滚到任意保存点的状态，类似存在存档的恢复，系统崩溃时，保存点会丢失
-
-commit并不影响获取到的锁
-
-### 链事务
-
-保存点模式的变种，思想是在提交一个事务时，释放不需要的数据对象，将必要的处理上下文交给下一个事务（提交事务操作和下一个事务操作将合并为一个原子操作）
-
-回滚只能到当前事务保存点状态
-
-commit后释放所有锁
-
-### 嵌套事务
-
-InnoDB原生不支持
-
-顶层事务控制着各层子事务
-
-### 分布式事务
-
-## 实现
-
-原子，一致，持久------redo log和undo log实现
-
-redo恢复提交事务修改的页操作，undo回滚行记录到某个特定版本
-
-redo通常是物理日志，undo是逻辑日志，记录行操作
-
-### redo
-
-ACID------D持久
-
-组成：内存中的重做日志缓冲（redo log buffer），重做日志文件（redo log buffer）
-
-redo 保证事务一致性，undo帮助事务进行回滚和MVCC
-
-redo log顺序写，undo log随机写
-
-为确保日志写入文件，每次重做日志缓冲写人缓冲后进行一次fsync，允许用户设置磁盘刷新策略
-
-innodb_flush_log_at_trx_commit = {0，1(default)， 2}控制重做日志刷新到磁盘
-
-- 0------事务提交时不写入重做日志操作
-- 1------事务提交时触发fsync操作
-- 2------事务提交时将重做日志写入日志文件，但只写入文件系统缓存
-
-#### log block
-
-从左日志文件使用log block存储，512字节
-
-#### log group
-
-无实际存储，逻辑上的概念
-
-#### 重做日志格式
-
-redo_log_type | space | page_no | redo log body
-
-从做日志类型，表空间ID，页偏移量
-
-存储管理基于页，故日志也是基于页的
-
-#### LSN
-
-Log Squence Number 日志序列号，8字节，单调递增
-
-- 重做日志写入量
-- checkpoint位置
-- 页的版本
-
-#### 恢复
-
-物理日志，恢复比undo快
-
-### undo
-
-只是将数据库逻辑的恢复到原貌
-
-存储管理采用段的方式
-
-存储引擎有rooback segment，每个段记录了1024个 undo log segment，在每个段中进行undo页申请
-
-### purge
-
-### group commit
-
-## 事务控制语句
+## 
 
 # 恢复
 
