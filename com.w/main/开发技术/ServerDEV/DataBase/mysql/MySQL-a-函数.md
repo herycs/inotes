@@ -70,3 +70,21 @@ limit n, m
 offset n
 ```
 
+## 内置函数
+
+### 时间
+
+```sql
+select adddate('1-1-1', '180') as 'Date' ;
+select addtime('13:25:44', '1:2:1') as 'Time';
+select current_time() as 'curr time';
+select current_date() as 'curr data';
+select current_timestamp() as 'curr time stamp';
+select current_user() as 'who am i';
+-- 日期差
+select datediff(date('2022-01-02'), current_date());
+```
+
+### 字符串
+
+### 数学计算
