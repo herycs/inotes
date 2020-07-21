@@ -200,6 +200,51 @@ del key
 
 extends key
 
+## 其他
+
+### 对象引用值
+
+object refcount key
+
+### 对象空转时间
+
+object idletime e
+
+### 切换数据库
+
+select numberOfDB
+
+### 设置过期时间
+
+setex key value
+
+只针对字符串键，设置值同时设置过期时间
+
+expire | expireat
+
+设定键过期时间，单位：s
+
+pexpire | pexpireat
+
+设置键过期时间，单位ms
+
+上述xxxat设置指定时间戳
+
+上述设置过期时间命令最终都是pexpireat实现的
+
+### 返回键剩余寿命
+
+TTL | PTTL
+
+```c
+127.0.0.1:6379> expire w 123
+(integer) 1
+127.0.0.1:6379> ttl w
+(integer) 118
+127.0.0.1:6379> ttl w
+(integer) 114
+```
+
 ## 配置
 
 ### redis持久化机制

@@ -263,8 +263,74 @@ encoding保存了数据类型和长度
 - 集合对象
 - 有序集合对象
 
+结构定义
+
+> server.h
+
+```c
+typedef struct redisObject {
+    unsigned type:4;
+    unsigned encoding:4;
+    unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
+                            * LFU data (least significant 8 bits frequency
+                            * and most significant 16 bits access time). */
+    int refcount;
+    void *ptr;
+} robj;
+```
+
+### 类型检查
+
+依据type
+
+### 多态命令
+
+我们的通用命令在底层的实现并不是恒定的
+
+使用LLEN获取长度，对于不同的数据结构，其长度计算和获取是不同的，而对具体命令的选取除了确保LLEN操作对象是列表键外，还需要依据键的值对象使用的编码使用正确的实现
+
+DEL，EXPIRE，TYPE——基于type的多态，一个命令处理多种不同类型的键
+
+LLEN——基于编码的多态，一个命令处理多种不同类型的编码
+
+### 回收
+
 引用计数回收机制
 
+每个对象的引用计数使用redisObject结构的refcount属性记录
 
+初始值为1，当refcount = 0内存会被释放
 
-## 
+### 对象共享
+
+步骤
+
+1. 数据库键值指向一个现有的值对象
+2. 将被共享的值对象的引用计数增1
+
+> Redis初始化服务器时，创建10_000个字符串对象，当服务器用值范围是[0, 9999]字符串对象时会使用这些共享对象
+
+```C
+127.0.0.1:6379> set b 333
+OK
+127.0.0.1:6379> object refcount b
+(integer) 2
+```
+
+Redis为何不共享**包含**字符串对象的对象？
+
+- redis共享一个对象前会检查key所期望的对象和现有对象是否完全相同，是才可以共享
+- 上述检查是必要的，但值的组成关系越复杂则越耗时
+
+### 对象空转时长
+
+lru记录对象最后一次被命令程序访问的时间
+
+```c
+127.0.0.1:6379> object idletime e
+(integer) 1482899
+127.0.0.1:6379> object idletime e
+(integer) 1482906
+127.0.0.1:6379>
+```
+
