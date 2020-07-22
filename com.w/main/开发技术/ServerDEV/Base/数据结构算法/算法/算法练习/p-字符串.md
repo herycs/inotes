@@ -33,8 +33,7 @@ class Solution {
         }
 
         Arrays.sort(str, (a, b)->(
-                (a + b).compareTo(b + a)
-                ));
+                (a + b).compareTo(b + a)));
         StringBuilder builder = new StringBuilder();
         for (String s : str){
             builder.append(s);

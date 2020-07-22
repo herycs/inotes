@@ -1,16 +1,18 @@
 # JVM&Java参数
 
-## 打印加载类
+## 空间大小设置
 
--XX:TraceClassLoading
-
-java -verbose
-
-## 设置直接内存
+### 设置直接内存
 
  -XX:MaxDirectMemorySize
 
-## 设置开启Table分配机制
+### 开启Dump堆转存快照
+
+-XX:+HeapDumpOnOutOfMemoryError
+
+## 特性功能启用
+
+### 设置开启Table分配机制
 
 > **为了保证对象的内存分配过程中的线程安全性，HotSpot虚拟机提供了一种叫做TLAB(Thread Local Allocation Buffer)的技术。**
 >
@@ -44,9 +46,15 @@ TLAB的refill_waste也是可以调整的，默认值为64，即表示使用约�
 
 -XX+PringTLAB
 
+### 打印加载类
+
+-XX:TraceClassLoading
+
+java -verbose
+
 ## CMS搜集器
 
-开启
+### 开启
 
 -XX:+UseConcMarkSweepGC
 
@@ -58,7 +66,7 @@ GC后多少次FullGC再做内存压缩
 
 -XX:CMSFullGCsBeforeCompaction=n
 
-CMS触发时机
+### CMS触发时机
 
 JVM仅在第一次会使用此,后续则自动调整
 
