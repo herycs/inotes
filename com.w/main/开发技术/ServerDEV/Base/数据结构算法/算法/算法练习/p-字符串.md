@@ -43,3 +43,45 @@ class Solution {
 }
 ```
 
+#### [1177. 构建回文串检测](https://leetcode-cn.com/problems/can-make-palindrome-from-substring/)
+
+```java
+class Solution {
+    public List<Boolean> canMakePaliQueries(String s, int[][] queries) {
+        
+        List<Boolean> list = new ArrayList<>();
+        
+        if (s == null || s == "" || queries == null || queries.length < 1 || queries[0].length < 2) return list;
+        
+        int[] state = new int[s.length()];
+        
+        state[0] = 1 << (s.charAt(0) - 'a');
+        for (int i = 1; i < s.length(); i++){
+            state[i] = state[i - 1] ^ (1 << (s.charAt(i) - 'a'));
+        }
+
+        for (int i = 0; i < queries.length; i++){
+            int left = queries[i][0];
+            int right = queries[i][1];
+            int k = queries[i][2];
+            
+            list.add(checkString(state, left, right, k));
+        }
+        return list;
+    }
+    
+    public boolean checkString(int[] state, int left, int right, int k){
+        int singleCharCount = 0;
+
+        int temp = (left == 0 ? state[right] : (state[left - 1] ^ state[right]));
+        
+        while (temp > 0){
+            singleCharCount += temp & 1;
+            temp >>= 1;
+        }
+        
+        return (singleCharCount >> 1) <= k;
+    }
+}
+```
+
