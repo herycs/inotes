@@ -12,6 +12,23 @@
         1. right - left > L 保持原有值不更新，这时left 和 right之间覆盖的就是当前情况下的解
         2. left++，循环
 
+```java
+public static int maxPoint(int[] arr, int L) {
+    if (arr == null || arr.length == 0 || L <= 0) return -1;
+
+    int left = 0;
+    int right = 0;
+    int res = 0;
+    while (left < arr.length){
+        while (right < arr.length && (arr[right] - L) <= arr[left]){
+            right++;
+        }
+        res = Math.max(res, right - left);
+    }
+    return res;
+}
+```
+
 ## 容器盛水
 
 > 二维数组作为容器，边界不存水

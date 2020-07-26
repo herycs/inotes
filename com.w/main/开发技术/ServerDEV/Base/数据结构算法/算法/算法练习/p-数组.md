@@ -22,3 +22,33 @@ class Solution {
 }
 ```
 
+#### 数组覆盖
+
+> 长度为L的绳子和一个数组
+>
+> 求绳子最多覆盖其中几个点
+
+1. 定长双指针（right为当前位置，left = [right - L] 指向当前能覆盖的最开始的位置）
+2. 快慢双指针（left，right不断后移，维持left 和 right的间距小于 L ）
+    1. 当right - left <= L，更新值 right++
+        1. right - left > L 保持原有值不更新，这时left 和 right之间覆盖的就是当前情况下的解
+        2. left++，循环
+
+```java
+public static int maxPoint(int[] arr, int L) {
+    if (arr == null || arr.length == 0 || L <= 0) return -1;
+
+    int left = 0;
+    int right = 0;
+    int res = 0;
+    while (left < arr.length){
+        while (right < arr.length && (arr[right] - L) <= arr[left]){
+            right++;
+        }
+        res = Math.max(res, right - left);
+    }
+    return res;
+}
+```
+
+## 
