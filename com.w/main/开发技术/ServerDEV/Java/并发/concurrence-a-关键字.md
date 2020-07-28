@@ -1,12 +1,10 @@
-## 锁关键字
+# 锁关键字
 
-## volatile
+# volatile
 
-- 若一个字段被声明为volatile，Java线程内存模型会确保所有线程看到的这个变量的值是一一致的
+> 若一个字段被声明为volatile，Java线程内存模型会确保所有线程看到的这个变量的值是一一致的
 
-语义
-
-- 当一个程序修改一个变量时，另外一个线程可以读到 这个修改的值（可以理解为轻量级的synchronized）
+语义：当一个程序修改一个变量时，另外一个线程可以读到 这个修改的值（可以理解为轻量级的synchronized）
 
 特征
 
@@ -23,27 +21,23 @@
 
     读一个volatile变量时，JMM会将该线程对应的本地内存置为无效
 
-### 内存语义实现
+## 内存语义实现
 
 > 基于保守策略
->
-> JSR-133前volatile并没有内存语义，**为了提供比锁更加轻量级的线程之间的通信机制**
 
-写操作
+### 为什么要有？
 
-StoreStore | volatile写操作 | StoreLoad
+JSR-133前volatile并没有内存语义，**为了提供比锁更加轻量级的线程之间的通信机制**
+
+写操作：StoreStore | volatile写操作 | StoreLoad
 
 > 此处写操作后增加了StoreLoad，目的是避免volatile写操作后面的volatile读写重排序
 >
 > 在 每个volatile写后或voletile读前增加 StoreLoad可达到目的，最终考虑性能(通常都是一个写，多个线程读)选择在写后增加StoreLoad
 
-读操作
+读操作：LoadLoad | vlatile读操作 | LoadStore
 
-LoadLoad | vlatile读操作 | LoadStore
-
-编译解析
-
-- 对于volatile变量，转为汇编时会添加lock指令
+编译解析：对于volatile变量，转为汇编时会添加lock指令
 
 lock指令作用：
 
@@ -62,7 +56,7 @@ lock指令作用：
 - 处理器不直接和内存通信，先执行写回内存的操作
 - 为确保数据的一致性，使用缓存一致性协议，嗅探总线上的值判断当前值是否过期（若过期就设置当前处理器缓存行为无效状态，当对这个数据修改时就会重新从系统内存中读取）
 
-### java的CAS实现volatile
+## 编译器&处理器的处理
 
 > 获取锁之前会读volatile类型state变量
 
@@ -79,22 +73,14 @@ lock指令作用：
 
 正因为以上操作使用了volatile，而volatile又具有其特性，CAS借助对volatile的操作实现了volatile所具有的内存语义
 
-自旋周期
+总结
 
-> [参考博客](https://blog.csdn.net/zqz_zqz/article/details/70233767)
+对于锁的获取与释放的内存语义的实现方式
 
-JDK1.6中-XX:+UseSpinning开启
--XX:PreBlockSpin=10 为自旋次数
-JDK1.7后，去掉此参数，由jvm控制
+1. 利用volatile变量的写——读具有的内存语义
+2. 利用CAS所附带的volatile读和volatile写的内存语义
 
-- 如果平均负载小于CPUs则一直自旋
-- 如果有超过(CPUs/2)个线程正在自旋，则后来线程直接阻塞
-- 如果正在自旋的线程发现Owner发生了变化则延迟自旋时间（自旋计数）或进入阻塞
-- 如果CPU处于节电模式则停止自旋
-- 自旋时间的最坏情况是CPU的存储延迟（CPU A存储了一个数据，到CPU B得知这个数据直接的时间差）
-- 自旋时会适当放弃线程优先级之间的差异
-
-### volatile使用优化
+## volatile使用优化
 
 - 追加字节使其满足当前处理设备的高速缓存行
 
@@ -102,7 +88,7 @@ JDK1.7后，去掉此参数，由jvm控制
 
 - 不适用情况：共享变量不会频繁的写
 
-## synchronized
+# synchronized
 
 ### 作用
 
@@ -282,11 +268,21 @@ java对象头长度
 </table>
 
 
+### 实现
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728212946575.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
+
+Synchronized在线程进入ContentionList时，等待的线程会先尝试自旋获取锁，如果获取不到就进入ContentionList，这明显对于已经进入队列的线程是不公平的，还有一个不公平的事情就是自旋获取锁的线程还可能直接抢占OnDeck线程的锁资源。
+
 ### 锁的优化
 
 之前也提到了，synchronized关键字对语句块的处理采用了两个字节码指令，而这两个指令在使用上代价是比较高，jdk1.6中锁具有四种状态，分别是：无锁--->偏向锁--->轻量级锁--->重量级锁，随着竞争状态升级。偏向锁--->轻量级锁过程不可逆。
 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728221720112.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
+
 #### 偏向锁
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2020072822180212.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
 
 ##### 获取锁
 
@@ -301,7 +297,7 @@ java对象头长度
 
 ##### 撤销
 
-当竞争出现，撤销锁（也就是当有了别的线程需要此偏向锁，上一个线程才撤销对偏向锁的占有）
+当**竞争**出现，撤销锁（也就是当有了别的线程需要此偏向锁，上一个线程才撤销对偏向锁的占有），被动发生
 
 撤销的时机：全局安全点
 
@@ -328,6 +324,8 @@ java对象头长度
 
 #### 轻量级锁
 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728221827501.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
+
 加锁
 
 > 当线程执行到同步块
@@ -349,19 +347,44 @@ java对象头长度
 
 自旋消耗CPU，避免无用自旋，升级为重量级锁后不再降级到轻量级锁，升级为重量级锁，当成为重量级锁后，其他企图获取次锁的线程会被**阻塞**，避免不必要的耗费，当锁释放后会唤醒这些线程，进行再一次的锁竞争
 
+自旋周期
+
+JVM对于自旋周期的选择，jdk1.5这个限度是一定的写死的，在1.6引入了适应性自旋锁，适应性自旋锁意味着自旋的时间不在是固定的了，而是由前一次在同一个锁上的自旋时间以及锁的拥有者的状态来决定，基本认为一个线程上下文切换的时间是最佳的一个时间，同时JVM还针对当前CPU的负荷情况做了较多的优化
+
+> [参考博客](https://blog.csdn.net/zqz_zqz/article/details/70233767)
+>
+> JDK1.6中-XX:+UseSpinning开启
+> -XX:PreBlockSpin=10 为自旋次数
+> JDK1.7后，去掉此参数，由jvm控制
+
+- 如果平均负载小于CPUs则一直自旋
+- 如果有超过(CPUs/2)个线程正在自旋，则后来线程直接阻塞
+- 如果正在自旋的线程发现Owner发生了变化则延迟自旋时间（自旋计数）或进入阻塞
+- 如果CPU处于节电模式则停止自旋
+- 自旋时间的最坏情况是CPU的存储延迟（CPU A存储了一个数据，到CPU B得知这个数据直接的时间差）
+- 自旋时会适当放弃线程优先级之间的差异
+
 #### 重量级锁
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728221842694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
 
 1. 线程尝试获取锁
     1. 成功->获取锁成功
     2. 失败->阻塞，等待被锁释放时被唤醒，再次尝试获取锁
 
-#### 锁消除
+### 执行过程
 
-> [参考博客](https://yq.aliyun.com/articles/666316)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200728221623453.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
 
-同步块不一定会被多个线程使用到，当只有一个线程使用同步块，这时再对进行加锁，解锁操作有些多此一举了，Java虚拟机JIT编译时通过上下文扫描，会除去不存在公共资源竞争的锁
+1. 检测Mark Word里面是不是当前线程的ID，如果是，表示当前线程处于偏向锁
+2. 如果不是，则使用CAS将当前线程的ID替换Mard Word，如果成功则表示当前线程获得偏向锁，置偏向标志位1
+3. 如果失败，则说明发生竞争，撤销偏向锁，进而升级为轻量级锁。
+4. 当前线程使用CAS将对象头的Mark Word替换为锁记录指针，如果成功，当前线程获得锁
+5. 如果失败，表示其他线程竞争锁，当前线程便尝试使用自旋来获取锁。
+6. 如果自旋成功则依然处于轻量级状态。
+7. 如果自旋失败，则升级为重量级锁。
 
-#### 锁对比
+### 锁对比
 
 | 锁       | 优点                             | 缺点                            | 适用                           |
 | -------- | -------------------------------- | ------------------------------- | ------------------------------ |
@@ -369,7 +392,7 @@ java对象头长度
 | 轻量级锁 | 竞争线程不阻塞，程序响应速度可观 | 获取不到锁的线程会自旋，消耗CPU | 追求响应时间，同步块执行时间短 |
 | 重量级锁 | 竞争过程不自旋，不耗CPU          | 未获取锁的线程阻塞，响应时间慢  | 追求吞吐量，同步块执行时间长   |
 
-## final
+# final
 
 ### 重排序规则
 
@@ -395,3 +418,60 @@ java对象头长度
 ### 内存语义
 
 旧内存模型中，final域的值可能被改变（重排序未做保证，当线程去看是可能是默认值，随后初始化，导致两次读到的初始化值不同，String 的内部定义就是使用final修饰的），JSR-133中通过增加重排序的规则确保其初始化结果是确定且正确的（只要线程可以拿到初始化后的对象，那么它的final域一定是初始化的值）
+
+# 锁优化
+
+## 锁消除
+
+> [参考博客](https://yq.aliyun.com/articles/666316)
+
+同步块不一定会被多个线程使用到，当只有一个线程使用同步块，这时再对进行加锁，解锁操作有些多此一举了，Java虚拟机JIT编译时通过上下文扫描，会除去不存在公共资源竞争的锁
+
+## 时间优化
+
+减少锁的时间，能不写在同步块里的就不要写在同步块里
+
+## 粒度优化
+
+### 锁细化
+
+大锁拆小锁，增加并行，减小竞争
+
+#### 实例
+
+ConcurrentHashMap
+
+LongAdder
+
+LongAdder 实现思路也类似ConcurrentHashMap，LongAdder有一个根据当前并发状况动态改变的Cell数组，Cell对象里面有一个long类型的value用来存储值;
+
+- 开始**没有并发争用**的时候或者是cells数组正在初始化的时候，会使用**cas**来将值累加到成员变量的base上
+- 在**并发争用**的情况下，LongAdder会初始化cells数组，在Cell数组中选定一个**Cell加锁**，数组有多少个cell，就允许同时有多少线程进行修改，最后将数组中每个Cell中的value相加，在加上base的值，就是最终的值；
+- cell数组还能根据当前线程争用情况进行**扩容**，初始长度为2，每次扩容会增长一倍，直到扩容到**大于等于cpu数量**就不再扩容
+
+这也就是为什么LongAdder比cas和AtomicInteger效率要高的原因，后面两者都是volatile+cas实现的，他们的竞争维度是1，LongAdder的竞争维度为“Cell个数+1”为什么要+1？因为它还有一个base，如果竞争不到锁还会尝试将数值加到base上
+
+LinkedBlockingQueue
+
+LinkedBlockingQueue也体现了这样的思想，在队列头入队，在队列尾出队，入队和出队使用不同的锁，相对于LinkedBlockingArray只有一个锁效率要高；
+
+### 锁粗化
+
+例如，循环体中加锁，每次操作，都需要进入&退出临界区，这种情况下应当将锁放大，将这个循环锁起来，减少临界区的进退次数
+
+## 类型细化
+
+### 读写分离
+
+CopyOnWriteArrayList
+
+CopyOnWriteArraySet
+
+CopyOnWrite容器即写时复制的容器。通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。这样做的好处是我们可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器。
+　CopyOnWrite并发容器用于读多写少的并发场景，因为，读的时候没有锁，但是对其进行更改的时候是会加锁的，否则会导致多个线程同时复制出多个副本，各自修改各自的；
+
+## CAS&同步
+
+## 消除伪共享
+
+两个线程对毫不想干得两个变量的访问，但因为加载数据是以缓存行为单位的，导致A操作行的数据时，B需要等待A操作完（而这，本没有必要）

@@ -123,7 +123,7 @@ static int hash(int h) {
 
 1. 对key进行hash()若为null,得到的值将会是0，计算索引索引任然是hash & (length -1)
 
-    > 源码中的hash()方法，除了调用Object的hash方法，还与hash高16位进行了与运算
+    > 源码中的hash()方法，除了调用Object的hash方法，还与hash高16位进行了异或运算
 
     ```java
     static final int hash(Object key) {
@@ -182,9 +182,9 @@ static int hash(int h) {
         final Node<K,V>[] resize() {
             //...省略其他代码
             if ( (e.hash & oldCap) == 0){
-                newIndex = oldIndex;//此处不是源码的抽象实现只为了表示简单，实际代码可参见源码
+                newIndex = oldIndex;//此处不是源码的实现只为了表示简单，实际代码可参见源码
             }else {
-                newIndex = oldIndex + oldCap;//此处不是源码的抽象实现只为了表示简单
+                newIndex = oldIndex + oldCap;//此处不是源码的实现只为了表示简单
             }
             //...省略其他代码
         }
@@ -196,7 +196,7 @@ static int hash(int h) {
 
 - 结果：数据顺序不变
 
-## 源码定义
+## 源码
 
 > 1.8
 
@@ -262,7 +262,7 @@ static final int UNTREEIFY_THRESHOLD = 6;
 
 > jdk1.8
 
-**hashCode**
+### hashCode
 
 > hashCode()是一个native方法
 
@@ -272,7 +272,7 @@ int类型返回值，理论上可将实现近4亿的映射空间，但内存加�
 
 实现对少量数据空间的映射，采用取模的策略，具体实现时采用的是^运算（高效）实现对定量空间的映射
 
-**& (length-1)**
+### & (length-1)
 
 jdk1.7采用这种操作，实际上是对hash值的低16位数据进行了处理（实际使用时数据量一般个数不到2^16)，故采用这种方式实际上是只利用了低16位
 

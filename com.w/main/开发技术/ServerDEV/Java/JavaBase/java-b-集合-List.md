@@ -286,17 +286,11 @@ private void readObject(java.io.ObjectInputStream s)
 
 ## 应用
 
-效率：
+效率：ArrayList底层采用数组实现，故具有了数组的随机读取的特性，同样也继承了数组的大量的增加，删除操作方面的劣势。
 
-- ArrayList底层采用数组实现，故具有了数组的随机读取的特性，同样也继承了数组的大量的增加，删除操作方面的劣势。
+安全性：并未提供锁，故而是线程不安全的
 
-安全性：
-
-- 并未提供锁，故而是线程不安全的
-
-限制：
-
-- 在存储值方面并无限制，数据域是Object[]
+限制：在存储值方面并无限制，数据域是Object[]
 
 # LinkedList
 
@@ -472,8 +466,6 @@ private boolean isElementIndex(int index) {
 
 序列化
 
-> 
->
 > writeObject(readObject)的作用是序列化(反序列化)后两部分内容，即类的描述部分和属性域的值部分
 >
 > defaultWriteObect(defaultReadObject)的作用就是序列化(反序列化)最后一部分内容，即属性域的值部分

@@ -38,7 +38,7 @@
 
 - 序列化时会将其引用对象也序列化，当一个类存在多个引用时只序列化一次，后续序列化直接指向已存在的序列话对象
 
-### 实现
+### 认识
 
 > [参考博客](https://blog.csdn.net/JianLeiXing/article/details/84525767?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase)
 >
@@ -52,7 +52,7 @@
 - 类的描述部分
 - 属性域的值
 
-#### 策略
+### 策略
 
 Java提供的序列化策略共计三种：
 
@@ -60,7 +60,7 @@ Java提供的序列化策略共计三种：
 2. 完全自定义序列化属性值的方法，可选择参与序列化的数据，可存储其他非this对象包含的数据。
 3. 使用自定义的序列化类
 
-#### 代码实现
+### 代码示例
 
 > 以LinkedList为例
 
@@ -91,8 +91,6 @@ private static final long serialVersionUID = 876323262645176354L;
 - 获取序列化必要参数
 
     ```java
-    
-    
     //序列化头部和字段，获取参数，并调用具体的序列化方法
     public void defaultWriteObject() throws IOException {
         SerialCallbackContext ctx = curContext;
@@ -106,7 +104,7 @@ private static final long serialVersionUID = 876323262645176354L;
         bout.setBlockDataMode(true);
     }
     ```
-
+    
 - 执行序列化
 
     ```java
@@ -151,7 +149,7 @@ private static final long serialVersionUID = 876323262645176354L;
         //获取字段值，存储于objVals处
         desc.getObjFieldValues(obj, objVals);
         for (int i = 0; i < objVals.length; i++) {
-            //遍历字段值，并
+            //遍历字段值
             if (extendedDebugInfo) {
                 debugInfoStack.push(
                     "field (class \"" + desc.getName() + "\", name: \"" +
@@ -206,9 +204,11 @@ private void readObject(java.io.ObjectInputStream s)
 }
 ```
 
-### java中的技术支持
+## 技术支持
 
 > 此部分转载自[博客](https://hollischuang.github.io/toBeTopJavaer/#/)
+
+### 接口
 
 #### Serializable接口
 
@@ -229,7 +229,7 @@ private void readObject(java.io.ObjectInputStream s)
 - 注意：
     - 实现Externalizable接口的类必须要提供一个public的无参的构造器。
 
-#### Serializable 和 Externalizable 有何不同
+#### 区别
 
 - 对⼀个对象进⾏序列化的时候， 如果遇到不⽀持`Serializable` 接口的对象。 在此情况下， 将抛`NotSerializableException`。
 - 如果要序列化的类有⽗类， 要想同时将在⽗类中定义过的变量持久化下来， 那么⽗类也应该集成`java.io.Serializable`接口。
@@ -241,7 +241,7 @@ private void readObject(java.io.ObjectInputStream s)
 
 结论：实现`Externalizable`， 并实现`writeExternal()`和`readExternal()`⽅法可以指定序列化哪些属性。
 
-#### serialVersionUID
+### serialVersionUID
 
 序列化ID
 
@@ -271,7 +271,7 @@ private void readObject(java.io.ObjectInputStream s)
 
 - 对`serialVersionUID`做了比较，如果发现不相等，则直接抛出异常。
 
-    深入看一下`getSerialVersionUID`方法：
+    看一下`getSerialVersionUID`方法：
 
     ```java
     public long getSerialVersionUID() {
@@ -290,29 +290,29 @@ private void readObject(java.io.ObjectInputStream s)
 
 - 在没有定义`serialVersionUID`的时候，会调用`computeDefaultSUID` 方法，生成一个默认的`serialVersionUID`
 
-#### transient
+### transient
 
 `transient` 关键字的作用是控制变量的序列化，在变量声明前加上该关键字，可以**阻止该变量被序列**化到文件中
 
 在被反序列化后，`transient` 变量的值被设为初始值。
 
-#### 序列化底层原理
+### 实质
 
 对象序列化保存的是对象的"状态"，即它的成员变量。由此可知，**对象序列化不会关注类中的静态变量**。
 
-在Java中，只要一个类实现了`java.io.Serializable`接口
+## 实际应用
 
 #### ArrayList序列化
 
-- ArrayList中elementData是`transient`的，本不能被反序列化出来，但实际结果并非如此
+ArrayList中elementData是`transient`的，本不能被反序列化出来，但实际结果并非如此
 
-- 原因是其提供了方法：
+原因是其提供了方法：
 
-    - ArrayList中定义了来个方法： `writeObject`和`readObject`。
-    - 序列化的过程是：
-        - 在序列化过程中，如果被序列化的类中定义了writeObject 和 readObject 方法，虚拟机会试图调用对象类里的 writeObject 和 readObject 方法，进行用户自定义的序列化和反序列化。
-        - 如果没有这样的方法，则默认调用是 ObjectOutputStream 的 defaultWriteObject 方法以及 ObjectInputStream 的 defaultReadObject 方法。
-        - 用户自定义的 writeObject 和 readObject 方法可以允许用户控制序列化的过程，比如可以在序列化的过程中动态改变序列化的数值。
+- ArrayList中定义了两个方法： `writeObject`和`readObject`。
+- 序列化的过程是：
+    - 在序列化过程中，如果被序列化的类中定义了writeObject 和 readObject 方法，虚拟机会试图调用对象类里的 writeObject 和 readObject 方法，进行用户自定义的序列化和反序列化。
+    - 如果没有这样的方法，则默认调用是 ObjectOutputStream 的 defaultWriteObject 方法以及 ObjectInputStream 的 defaultReadObject 方法。
+    - 用户自定义的 writeObject 和 readObject 方法可以允许用户控制序列化的过程，比如可以在序列化的过程中动态改变序列化的数值。
 
 
 #### 为了避免elementData无效数据被序列化
@@ -342,7 +342,7 @@ private void readObject(java.io.ObjectInputStream s)
     writeObject ---> writeObject0 --->writeOrdinaryObject--->writeSerialData--->invokeWriteObject
     ```
 
-## 序列化破坏单例模式
+## 破坏单例模式？
 
 - 普通的Java类的反序列化过程中，会通过反射调用类的默认构造函数来初始化对象。所以，即使单例中构造函数是私有的，也会被反射给破坏掉。由于反序列化后的对象是重新new出来的，所以这就破坏了单例。
 
