@@ -4,9 +4,17 @@
 
 # ArrayList
 
-## 基础
+## 特点
 
-继承结构
+容量：10 - Integer.MAX_VALUE - 8
+
+扩容：1.5倍，拷贝算法
+
+线程：不安全
+
+## 源码
+
+### 继承结构
 
 ```java
 public class ArrayList<E> extends AbstractList<E>
@@ -14,49 +22,36 @@ public class ArrayList<E> extends AbstractList<E>
 }
 ```
 
-字段
+### 数据域
 
 ```java
-/**
-     * [解决序列化认证问题]
-     * 接收到序列化后的数据流，在恢复时会校验其序列化ID，也就是[serialVersionUID]
-     * 若和本地的序列化ID一致则可序列化成功
-     */
-private static final long serialVersionUID = 8683452581122892189L;
+private static final Object[] EMPTY_ELEMENTDATA = {};
+private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};// [用于在实例化对象未赋值时默认填充数据空间]
+transient Object[] elementData;
+```
 
+### 容量限制
+
+```java
 //默认容量大小
 private static final int DEFAULT_CAPACITY = 10;
-
-private static final Object[] EMPTY_ELEMENTDATA = {};
-
-/**
-     * [用于在实例化对象未赋值时默认填充数据空间]
-     */
-private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
-
-transient Object[] elementData;
-
 //当前真实数据的个数
 private int size;
 
 /**
      * The maximum size of array to allocate.
      * Some VMs reserve some header words in an array.
-     * Attempts to allocate larger arrays may result in
-     * OutOfMemoryError: Requested array size exceeds VM limit
+     * Attempts to allocate larger arrays may result in OutOfMemoryError: Requested array size exceeds VM limit
      */
 private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
 ```
 
-## 底层
-
-构造器
+### 构造器
 
 ```java
 //无参构造器
 public ArrayList() {
-    //数据域设定为[默认空数据域]
-    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;    //数据域设定为[默认空数据域]
 }
 
 //指定初始容量
@@ -64,14 +59,13 @@ public ArrayList(int initialCapacity) {
     if (initialCapacity > 0) {
         this.elementData = new Object[initialCapacity];
     } else if (initialCapacity == 0) {
-        //容量为0， 则将数据域赋值为[EMPTY_ELEMENTDATA]
-        this.elementData = EMPTY_ELEMENTDATA;
+        this.elementData = EMPTY_ELEMENTDATA;//容量为0， 则将数据域赋值为[EMPTY_ELEMENTDATA]
     } else {
         throw new IllegalArgumentException("Illegal Capacity: "+initialCapacity);
     }
 }
 
-//设置数据域
+// 集合类为参数，设置数据域
 public ArrayList(Collection<? extends E> c) {
     elementData = c.toArray();
     if ((size = elementData.length) != 0) {
@@ -85,7 +79,7 @@ public ArrayList(Collection<? extends E> c) {
 }
 ```
 
-扩容
+### 扩容
 
 ```java
 public void ensureCapacity(int minCapacity) {
@@ -96,17 +90,17 @@ public void ensureCapacity(int minCapacity) {
 }
 
 private void grow(int minCapacity) {
-    // overflow-conscious code
-    int oldCapacity = elementData.length;
-    // 扩容机制 [oldCapacity*1.5]
-    int newCapacity = oldCapacity + (oldCapacity >> 1);
-    if (newCapacity - minCapacity < 0)
-        newCapacity = minCapacity;
-    //当新容量大于最大限制容量会执行，hugeCapacity()方法
-    if (newCapacity - MAX_ARRAY_SIZE > 0)
-        newCapacity = hugeCapacity(minCapacity);
+	
+    int oldCapacity = elementData.length;    // overflow-conscious code
+	// 空间
+    int newCapacity = oldCapacity + (oldCapacity >> 1);// 扩容机制 [oldCapacity*1.5]  
+    if (newCapacity - minCapacity < 0) newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE > 0) newCapacity = hugeCapacity(minCapacity);//当新容量大于最大限制
+    
+    // 数据拷贝
     elementData = Arrays.copyOf(elementData, newCapacity);
 }
+
 private static int hugeCapacity(int minCapacity) {
     if (minCapacity < 0) // overflow
         throw new OutOfMemoryError();
@@ -115,7 +109,7 @@ private static int hugeCapacity(int minCapacity) {
 }
 ```
 
-增加
+### 增加
 
 ```java
 //尾部追加策略
@@ -135,7 +129,7 @@ public void add(int index, E element) {
 }
 ```
 
-删除
+### 删除
 
 > 调用删除方法，参数若为对象，则需要写equals()方法
 
@@ -167,13 +161,11 @@ public void add(int index, E element) {
     private void fastRemove(int index) {
         modCount++;
         int numMoved = size - index - 1;
-        if (numMoved > 0)
-            System.arraycopy(elementData, index+1, elementData, index,
-                             numMoved);
+        if (numMoved > 0) System.arraycopy(elementData, index+1, elementData, index, numMoved);
         elementData[--size] = null; // clear to let GC do its work
     }
     ```
-
+    
 - 范围删除
 
     ```java
@@ -193,22 +185,31 @@ public void add(int index, E element) {
     }
     ```
 
-边界检查
+### 边界检查
 
 ```java
 /**
  * A version of rangeCheck used by add and addAll.
  */
 private void rangeCheckForAdd(int index) {
-    if (index > size || index < 0)
-        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    if (index > size || index < 0) throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 }
 ```
 
-序列化操作
+### 序列化操作
 
 ```java
-//序列化
+/**
+     * [解决序列化认证问题]
+     * 接收到序列化后的数据流，在恢复时会校验其序列化ID，也就是[serialVersionUID]
+     * 若和本地的序列化ID一致则可序列化成功
+     */
+private static final long serialVersionUID = 8683452581122892189L;
+```
+
+序列化
+
+```java
 private void writeObject(java.io.ObjectOutputStream s)
     throws java.io.IOException{
     // Write out element count, and any hidden stuff
@@ -224,8 +225,11 @@ private void writeObject(java.io.ObjectOutputStream s)
         throw new ConcurrentModificationException();
     }
 }
+```
 
-//反序列化
+反序列化
+
+```java
 private void readObject(java.io.ObjectInputStream s)
     throws java.io.IOException, ClassNotFoundException {
     elementData = EMPTY_ELEMENTDATA;
@@ -294,19 +298,26 @@ private void readObject(java.io.ObjectInputStream s)
 
 # LinkedList
 
-## 基础
+## 特点
 
-继承结构
+数据结构：双端队列
+
+安全：线程不安全
+
+结构修改计数器：clear等都只记录为一次结构修改
+
+## 源码
+
+### 继承结构
 
 ```java
-public class LinkedList<E>
-    extends AbstractSequentialList<E>
+public class LinkedList<E> extends AbstractSequentialList<E>
     implements List<E>, Deque<E>, Cloneable, java.io.Serializable{
     //...
 }
 ```
 
-字段
+### 字段
 
 ```java
 transient int size = 0;
@@ -325,9 +336,17 @@ transient Node<E> last;
 protected transient int modCount = 0;
 ```
 
-## 底层
+### 数据域
 
-添加
+```java
+private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+}
+```
+
+### 添加
 
 > 在修改数据个数时同时修改了[modCount]值
 
@@ -359,7 +378,7 @@ void linkLast(E e) {
 }
 ```
 
-插入
+### 插入
 
 ```java
 //定向插入,前置插入
@@ -376,7 +395,7 @@ void linkBefore(E e, Node<E> succ) {
 }
 ```
 
-移除
+### 移除
 
 ```java
 //首部移除
@@ -435,7 +454,7 @@ public boolean remove(Object o) {
 }
 ```
 
-清空
+### 清空
 
 ```java
 public void clear() {
@@ -454,7 +473,7 @@ public void clear() {
 }
 ```
 
-边界值判定
+### 边界检查
 
 ```java
 private boolean isElementIndex(int index) {
@@ -464,7 +483,7 @@ private boolean isElementIndex(int index) {
 }
 ```
 
-序列化
+### 序列化
 
 > writeObject(readObject)的作用是序列化(反序列化)后两部分内容，即类的描述部分和属性域的值部分
 >
@@ -499,3 +518,20 @@ private void readObject(java.io.ObjectInputStream s)
         linkLast((E)s.readObject());
 }
 ```
+
+# Vector
+
+## 特点
+
+扩容：1倍
+
+安全：synchronized包裹操作方法
+
+## 源码
+
+### 数据域
+
+```java
+protected Object[] elementData;
+```
+

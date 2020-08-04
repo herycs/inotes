@@ -1,5 +1,15 @@
 # 字符串
 
+## 回文
+
+以尾字符分类
+
+以首尾字符分类
+
+以首字符分类
+
+
+
  [剑指 Offer 45.最长不含重复字符的子字符串](https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/)
 
 Hash存储出现过的字符索引，用于更新左边界
@@ -31,9 +41,7 @@ class Solution {
         for (int i = 0; i < str.length; i++) {
             str[i] = String.valueOf(nums[i]);
         }
-
-        Arrays.sort(str, (a, b)->(
-                (a + b).compareTo(b + a)));
+        Arrays.sort(str, (a, b)->((a + b).compareTo(b + a))); // 重新大小规则
         StringBuilder builder = new StringBuilder();
         for (String s : str){
             builder.append(s);
@@ -48,7 +56,6 @@ class Solution {
 ```java
 class Solution {
     public List<Boolean> canMakePaliQueries(String s, int[][] queries) {
-        
         List<Boolean> list = new ArrayList<>();
         if (s == null || s == "" || queries == null || queries.length < 1 || queries[0].length < 2) return list;
         

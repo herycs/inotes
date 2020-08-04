@@ -4,6 +4,12 @@
 
 # HashMap
 
+## 特点
+
+性能高
+
+安全：不安全
+
 ## 概览
 
 ### jdk1.7
@@ -499,4 +505,200 @@ final Node<K, V>[] resize() {
 > [参考知乎](https://zhuanlan.zhihu.com/p/55890890)
 >
 > [参考个人博客](https://www.bbsmax.com/A/kmzLrgXA5G/)
+
+# HashTable
+
+## 特点
+
+
+
+## 源码
+
+### 字段
+
+```java
+private transient Entry<?,?>[] table;
+
+private transient int count;
+
+private int threshold;
+
+private float loadFactor;
+
+private transient int modCount = 0;
+```
+
+# TreeMap
+
+## 特点
+
+底层红黑树
+
+## 源码
+
+### 构造器
+
+```java
+public TreeMap() {
+    comparator = null;
+}
+
+public TreeMap(Comparator<? super K> comparator) {
+    this.comparator = comparator;
+}
+
+public TreeMap(Map<? extends K, ? extends V> m) {
+    comparator = null;
+    putAll(m);
+}
+
+public TreeMap(SortedMap<K, ? extends V> m) {
+    comparator = m.comparator();
+    try {
+        buildFromSorted(m.size(), m.entrySet().iterator(), null, null);
+    } catch (java.io.IOException cannotHappen) {
+    } catch (ClassNotFoundException cannotHappen) {
+    }
+}
+```
+
+### 结构修改
+
+```java
+private static <K,V> boolean colorOf(Entry<K,V> p) {
+    return (p == null ? BLACK : p.color);
+}
+
+private static <K,V> Entry<K,V> parentOf(Entry<K,V> p) {
+    return (p == null ? null: p.parent);
+}
+
+private static <K,V> void setColor(Entry<K,V> p, boolean c) {
+    if (p != null)
+        p.color = c;
+}
+
+private static <K,V> Entry<K,V> leftOf(Entry<K,V> p) {
+    return (p == null) ? null: p.left;
+}
+
+private static <K,V> Entry<K,V> rightOf(Entry<K,V> p) {
+    return (p == null) ? null: p.right;
+}
+
+/** From CLR */
+private void rotateLeft(Entry<K,V> p) {
+    if (p != null) {
+        Entry<K,V> r = p.right;
+        p.right = r.left;
+        if (r.left != null)
+            r.left.parent = p;
+        r.parent = p.parent;
+        if (p.parent == null)
+            root = r;
+        else if (p.parent.left == p)
+            p.parent.left = r;
+        else
+            p.parent.right = r;
+        r.left = p;
+        p.parent = r;
+    }
+}
+
+/** From CLR */
+private void rotateRight(Entry<K,V> p) {
+    if (p != null) {
+        Entry<K,V> l = p.left;
+        p.left = l.right;
+        if (l.right != null) l.right.parent = p;
+        l.parent = p.parent;
+        if (p.parent == null)
+            root = l;
+        else if (p.parent.right == p)
+            p.parent.right = l;
+        else p.parent.left = l;
+        l.right = p;
+        p.parent = l;
+    }
+}
+
+/** From CLR */
+private void fixAfterInsertion(Entry<K,V> x) {
+    x.color = RED;
+
+    while (x != null && x != root && x.parent.color == RED) {
+        if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
+            Entry<K,V> y = rightOf(parentOf(parentOf(x)));
+            if (colorOf(y) == RED) {
+                setColor(parentOf(x), BLACK);
+                setColor(y, BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                x = parentOf(parentOf(x));
+            } else {
+                if (x == rightOf(parentOf(x))) {
+                    x = parentOf(x);
+                    rotateLeft(x);
+                }
+                setColor(parentOf(x), BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                rotateRight(parentOf(parentOf(x)));
+            }
+        } else {
+            Entry<K,V> y = leftOf(parentOf(parentOf(x)));
+            if (colorOf(y) == RED) {
+                setColor(parentOf(x), BLACK);
+                setColor(y, BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                x = parentOf(parentOf(x));
+            } else {
+                if (x == leftOf(parentOf(x))) {
+                    x = parentOf(x);
+                    rotateRight(x);
+                }
+                setColor(parentOf(x), BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                rotateLeft(parentOf(parentOf(x)));
+            }
+        }
+    }
+    root.color = BLACK;
+}
+```
+
+### 查重
+
+```java
+public boolean containsKey(Object key) {
+    return getEntry(key) != null;
+}
+
+public boolean containsValue(Object value) {
+    for (Entry<K,V> e = getFirstEntry(); e != null; e = successor(e))
+        if (valEquals(value, e.value))
+            return true;
+    return false;
+}
+```
+
+### 查找边界元素
+
+```java
+final Entry<K,V> getFirstEntry() {
+    Entry<K,V> p = root;
+    if (p != null)
+        while (p.left != null)
+            p = p.left;
+    return p;
+}
+```
+
+```java
+final Entry<K,V> getLastEntry() {
+    Entry<K,V> p = root;
+    if (p != null)
+        while (p.right != null)
+            p = p.right;
+    return p;
+}
+```
 
