@@ -94,10 +94,8 @@ Serial收集器老年代版本
 
 1. 对CPU敏感：
     - 默认线程数（CPU数+3)/4
-    - 应对策略：
-        - 增量式并发收集器（Incremental Concurrent Mark Sweep/i-CMS)，并发标记，清理时让用户线程，GCx线程交替运行（实践效果一般，不在提倡）
-2. 无法处理浮动垃圾（Floating Garbage）：
-    - 原因：并发清理阶段用户线程在运行，这部分垃圾在标记过程之后，只能留到下次GC处理
+    - 应对策略：增量式并发收集器（Incremental Concurrent Mark Sweep/i-CMS)，并发标记，清理时让用户线程，GCx线程交替运行（实践效果一般，不再提倡）
+2. 无法处理浮动垃圾（Floating Garbage）：并发清理阶段用户线程在运行，这部分垃圾在标记过程之后，只能留到下次GC处理
 3. 空间碎片：
     - 由于采用标记清除算法
     - -XX+UseCMSCompactAtFullCollection，将进行Full GC时开启内存碎片的合并整理过程
@@ -128,21 +126,14 @@ server
 
 大致操作流程（不计算RememberSet）：
 
-初识标记（Initial mark）
+1. 初识标记（Initial mark）：标记GC Roots能直接关联到的对象，修改TAMS（Next Top at Mark Start）
 
-- 标记GC Roots能直接关联到的对象，修改TAMS（Next Top at Mark Start）
+2. 并发标记（Concurrent mark）：从GC Roots开始对堆中对象进行可达性分析，找出存活对象，可与用户线程并发执行
 
-并发标记（Concurrent mark）
+3. 最终标记（Final Marking）：修正并发标记期间，因用户线程继续运作而产生变化的标记记录，这段时间内对象变化记录在Remember Set中，此阶段需要停顿线程，但可并发执行
 
-- 从GC Roots开始对堆中对象进行可达性分析，找出存活对象，可与用户线程并发执行
+4. 筛选回收（Live Data Counting and Evacuation）：对各个Region的回收价值及成本进行排序，根据用户期望的GC停顿时间来定制计划，可与用户线程并发执行，但时间较短，停顿用户线程能大幅提高回收效率
 
-最终标记（Final Marking）
-
-- 修正并发标记期间，因用户线程继续运作而产生变化的标记记录，这段时间内对象变化记录在Remember Set中，此阶段需要停顿线程，但可并发执行
-
-筛选回收（Live Data Counting and Evacuation）
-
-- 对各个Region的回收价值及成本进行排序，根据用户期望的GC停顿时间来定制计划，可与用户线程并发执行，但时间较短，停顿用户线程能大幅提高回收效率
 
 # 2.内存分配策略
 

@@ -170,21 +170,13 @@
 
 ## 引用
 
-强引用（Strong Reference)
+强引用（Strong Reference)：代码中普遍存在，类似Object obj = new Object()
 
-- 代码中普遍存在，类似Object obj = new Object()
+软引用（Soft Reference)：有用但非必须
 
-软引用（Soft Reference)
+弱引用（Weak Reference)：存活至下次GC之前
 
-- 有用但非必须
-
-弱引用（Weak Reference)
-
-- 存活至下次GC之前
-
-虚引用（Phantom Reference)
-
-- 无法通过虚引用获取对象实例，唯一目的，被GC时收到系统通知
+虚引用（Phantom Reference)：无法通过虚引用获取对象实例，唯一目的，被GC时收到系统通知
 
 ## 对象的真正去留
 

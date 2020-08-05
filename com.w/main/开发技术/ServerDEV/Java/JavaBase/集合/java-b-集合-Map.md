@@ -2,6 +2,10 @@
 
 > HashMap & LinkedHashMap & TreeMap & CouncurrentHashMap
 
+关系分析：HashMap 是 HashTable 轻量级实现，CouncurrentHashMap 并发环境下的较好选择
+
+不建议使用HashTable：Hashtable使用了同步机制，避免了多个线程同时读写Hashtable。但在iterator遍历过程中其他线程对Hashtable的put、 remove、clear操作都会被成功执行
+
 # HashMap
 
 ## 特点
@@ -9,6 +13,10 @@
 性能高
 
 安全：不安全
+
+限制：有且只有一个键为null
+
+版本修改：1.7segment->1.8Node
 
 ## 概览
 
@@ -510,7 +518,9 @@ final Node<K, V>[] resize() {
 
 ## 特点
 
+扩容：2倍 + 1
 
+安全：synchronized 修饰操作方法
 
 ## 源码
 
@@ -702,3 +712,4 @@ final Entry<K,V> getLastEntry() {
 }
 ```
 
+> [参考](https://www.cnblogs.com/LiaHon/p/11221634.html)
