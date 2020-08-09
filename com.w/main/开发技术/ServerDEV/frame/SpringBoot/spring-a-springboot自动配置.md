@@ -11,6 +11,8 @@
 
 ### SpringBootApplication
 
+注解源码：
+
 ```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -144,7 +146,6 @@ public @interface SpringBootApplication {}
         		if (result != null) {
         			return result;
         		}
-        
         		try {
         			Enumeration<URL> urls = (classLoader != null ?
         					classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :
@@ -170,12 +171,12 @@ public @interface SpringBootApplication {}
         		}
         	}
         ```
-
-        自动配置SpringBoot从**META-INF/spring.factories中获取EnableAutoConfiguration指定的值，将这些值作为自动配置类导入到容器中，自动配置类就生效**
-
-        该文件部分内容如下，可以看得到配置了很多的配置类的路径
-
-        ```properties
+        
+自动配置SpringBoot从**META-INF/spring.factories中获取EnableAutoConfiguration指定的值，将这些值作为自动配置类导入到容器中，自动配置类就生效**
+        
+该文件部分内容如下，可以看得到配置了很多的配置类的路径
+        
+```properties
         # AutoConfigureCache auto-configuration imports
         org.springframework.boot.test.autoconfigure.core.AutoConfigureCache=\
         org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration

@@ -1,0 +1,92 @@
+# web配置
+
+```xml
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+  <display-name>Archetype Created Web Application</display-name>
+
+  <!--设置配置文件的路径-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml,classpath:spring-security.xml</param-value>
+  </context-param>
+
+  <!--配置Spring的监听器，默认只加载WEB-INF目录下的applicationContext.xml配置文件-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <!--解决中文乱码的过滤器-->
+  <filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--  权限管理-->
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--配置前端控制器-->
+  <servlet>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!--加载springmvc.xml配置文件-->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:springmvc.xml</param-value>
+    </init-param>
+    <!--启动服务器，创建该servlet-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+<!--  错误页面-->
+<!--  <error-page>-->
+<!--    <error-code>403</error-code>-->
+<!--    <location>/WEB-INF/pages/error/403.jsp</location>-->
+<!--  </error-page>-->
+<!--  <error-page>-->
+<!--    <error-code>404</error-code>-->
+<!--    <location>/page/404.html</location>-->
+<!--  </error-page>-->
+<!--  <error-page>-->
+<!--    <error-code>500</error-code>-->
+<!--    <location>/WEB-INF/pages/error/500.jsp</location>-->
+<!--  </error-page>-->
+
+  <welcome-file-list>
+    <welcome-file>page/login/login.html</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+
+</web-app>
+```
+
