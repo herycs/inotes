@@ -200,7 +200,27 @@ del key
 
 extends key
 
+### 复制
+
+slaveof [ip] [port]
+
+### 心跳
+
+replconf ak [replication_offset]
+
+## 哨兵
+
+### 启动
+
+redis-sentinel /path/xxx/xxx.conf
+
+redis-server /path/xxx/sentinel.conf --sentinal
+
 ## 其他
+
+### 估算最近一次命令请求执行数量
+
+info status
 
 ### 对象引用值
 
