@@ -208,6 +208,34 @@ slaveof [ip] [port]
 
 replconf ak [replication_offset]
 
+## 排序
+
+sort asc | sort desc
+
+sort xxx by [字段]
+
+## 频道
+
+### 发送消息
+
+publish
+
+### 订阅&退订
+
+subscribe | unsubscribe
+
+psubscribe | punsubscribe
+
+### 查询订阅情况
+
+频道：
+
+pubsub numsub [channel-name] [channel2-name]
+
+模式：
+
+pubsub numpat [name1] [name2]
+
 ## 哨兵
 
 ### 启动
