@@ -190,6 +190,42 @@ zcrad key
 
 zrem key value
 
+### BitMap
+
+setbit [name] [offset] [value]
+
+```shell
+127.0.0.1:6379> setbit bit 1 1 # 0000 0010
+(integer) 0
+127.0.0.1:6379> setbit bit 3 1 # 0000 1000
+(integer) 0
+```
+
+getbit [name] [offset]
+
+获取一定偏移量上的值
+
+bitcount
+
+统计比特位为1的个数
+
+bitop
+
+```shell
+127.0.0.1:6379> setbit x 3 1 # 0000 1000
+(integer) 1
+127.0.0.1:6379> setbit y 2 1 # 0000 0100
+(integer) 1
+127.0.0.1:6379> setbit z 0 1 # 0000 0001
+(integer) 1
+127.0.0.1:6379> bitop and a x y # a = 0000 0000
+(integer) 1
+127.0.0.1:6379> bitop or b x y # b = 0000 1100
+(integer) 1
+127.0.0.1:6379> bitop xor c x y # c = 0000 0101
+(integer) 1
+```
+
 ### 通用
 
 keys *
