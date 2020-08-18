@@ -1,5 +1,13 @@
 # nginx-config
 
+## 认知
+
+单位：
+
+nginx中配置是否可用指定单位取决于模块的实现
+
+配置中使用变量：少数模块支持
+
 ## 配置框架
 
 - 全局配置：服务器用户组，pid路径，日志路径等等
@@ -22,7 +30,7 @@ http
 }
 ```
 
-## 初始配置模板
+## 模板
 
 ```shell
 
@@ -113,4 +121,152 @@ upstream mysvr {
     ip_hash;
 }
 ```
+
+## Nginx服务的基本配置
+
+### 用于调试进程和定位问题
+
+- 是否以守护方式运行：daemon {on | off}
+- 是否以master/worker方式工作：master_process {on | off}
+- error日志：error_log [/path/file] [level]
+- 是否处理特殊调试点：debug_points [stop | abort]
+- 仅仅对指定客户端输出debug日志：debug_connection [IP | CIDR]
+- 限制coredump核心转储文件大小：worker_rlimit_core size
+- 指定coredump文件生成目录：working_driectory path
+
+### 正常运行的配置项
+
+定义环境变量
+
+嵌入其他配置文件
+
+pid文件路径
+
+Nginx worker进程及用户组
+
+指定Nginx可打开的最大句柄描述符个数
+
+限制信号队列
+
+### 优化性能
+
+worker进程个数
+
+worker绑定到CPU
+
+SSL硬件加速
+
+系统调用gettimeofday执行频率
+
+worker进程优先级
+
+### 事件类配置项
+
+是否打开accept锁
+
+lock文件路径
+
+使用accept锁到建立连接之间的延迟时间
+
+批量建立新链接
+
+选择事件模型
+
+每个worker最大链接数
+
+## 实操静态资源服务
+
+### 虚拟主机与转发
+
+监听端口：listen [address] : [port]
+
+主机名称：server_name name
+
+### 文件路径定义
+
+以root方式设置资源路径
+
+以alias方式设置资源路径
+
+访问首页
+
+依据Http返回码重定向页面
+
+是否允许递归使用error_page
+
+try_files
+
+### 内存、磁盘资源分配
+
+Http包体只存储到磁盘文件
+
+Http包体尽量写入到一个内存buffer中
+
+存储Http头部内存buffer的大小
+
+存储超大Http头部的内存buffer的大小
+
+存储Http包体的内存buffer大小
+
+Http包体临时存放目录
+
+### 网络连接的设置
+
+读取 Http头部超时时间
+
+读取Http包体的超时时间
+
+发送响应的超时时间
+
+### MIME类型的设置
+
+### 限制客户端
+
+按Http方法名限制用户请求
+
+Http请求包体的最大值
+
+对请求的限速
+
+### 文件操作的优化
+
+sendfile系统调用
+
+AIO系统调用
+
+### 客户端请求特殊处理
+
+忽略不合法Http
+
+Http头部是否允许下划线
+
+对If-Modified-Since头部处理策略
+
+## 负载均衡
+
+### upstream块
+
+### server
+
+### ip_hash
+
+### 记录日志时支持的变量
+
+## 反向代理
+
+### proxy_pass
+
+### proxy_method
+
+### proxy_hide_header
+
+### proxy_pass_header
+
+### proxy_pass_request_body
+
+### proxy_pass_request_headers
+
+### proxy_redirect
+
+### proxy_next_upstream
 
