@@ -12,11 +12,31 @@
 
 ngx_queue_t双向链表
 
+不负责内存分配，只负责节点管理
+
+轻量级链表容器
+
 ngx_array_t动态数组
 
 ngx_list_t单向链表
 
-ngx_rbtree_t红黑树
+负责内存分配
+
+ngx_radix_tree_t基数树和ngx_rbtree_t红黑树
+
+ngx_radix_tree_t
+
+必须以整数作为关键字
+
+插入删除无需旋转
+
+ngx_rbtree_t
+
+红黑树
+
+### 为什么？
+
+
 
 ngx_radix_tree_t基数
 
