@@ -33,37 +33,104 @@
 
 ### 平台无关代码设计
 
+使用C实现Nginx时尽量减少了对操作系统的依赖
+
+与操作系统相关代码针对不同操作系统有具体实现
+
 ### 内存池设计
 
-### 管道过滤
+避免出现内存碎片，减少向操作系统申请内存的次数，一般不负责回收内存池中已分配的空间
+
+一个请求一个连接池
+
+### 管道过滤模式的Http过滤模块
+
+本质是一类Http模块，每个模块有输入和输出，具有统一的接口
+
+依据Configure执行时决定的顺序组成流水线式的加工Http响应中心，每个过滤模块完全独立，负责接收输入，将输出传递给下一个过滤模块
 
 ### 其他用户模块
 
 ## 核心结构体
 
-ngx_listening_t
+Nginx核心代码框架围绕ngx_cycle_t结构体展开，每个进程拥有一个
 
-ngx_cycle_t
+服务在初始化时，以ngx_cycle_t对象为中心提供服务
 
-ngx_cycle_t
+### ngx_listening_t
+
+ngx_cycle_t结构体中的动态数组成员listening
+
+每一个这个结构体代表一个nginx监听一个端口
+
+### ngx_cycle_t
+
+### ngx_cycle_t支持的方法
 
 ## nginx启动时框架的处理流程
 
+1. 依据命令得到配置文件path
+2. (处于升级中)监听环境变量里传递的监听句柄
+3. 调用所有核心模块的create_conf方法生成存放配置项的结构体
+4. 针对所有核心模块解析nginx.conf配置文件
+5. 调用核心模块的init_conf
+6. 创建目录，打开文件，初始化共享内存等进程间通信
+7. 打开由各Nginx模块从配置文件中读取到的监听端口
+8. 调用所有模块的init_moudle方法
+9. 以进程方式运行Nginx
+    - 以单进程方式运行-》single模式-》调用所有模块的init_process
+    - 以Master多进程方式运行，多进程并发执行
+        - master进程
+        - worker进程-》调用init_process方法
+        - cache manager进程-》cache loader子进程-》关闭父进程启动时监听的端口
+
+第2步，调用ngx_add_inherited_sockets
+
+第3-8步，ngx_init_cycle方法中执行
+
+调用配置模块提供的解析配置项方法，遍历nginx.conf的所有配置项
+
+调用核心模块的init_conf，这一步骤的目的在于让所有核心模块在解析完配置项后可以综合性处理
+
 ### worker进程工作流程
 
+关注4个全局标志位
+
+quit---优雅关闭
+
+terminate---强制关闭进程
+
+ngx_reopen---重新打开所有文件
+
+ngx_debug_quit---目前无实际意义
+
 ### master进程工作过程
+
+不处理网络事件，通过子进程实现重启服务，平滑升级，更换日志文件，配置文件实时生效
 
 # 事件模块
 
 ## 定义
 
-## 连接
+主要用于解决收集，管理，分发事件
 
-主动
+## 连接
 
 被动
 
+由客户端发起，使用ngx_connection_t定义
+
+主动
+
+服务器发起，使用ngx_peer_connection_t定义
+
 连接池
+
+Nginx认为任何一个连接至少需要一个读事件一个写事件，有多少连接分配多少事件
+
+如何联系读事件，写事件，连接池？
+
+三者都由大小相同的三个数组组成，依据数组序号连接，这在ngx_event_core_moudle模块的初始化过程中决定了
 
 ## ngx_events_moudle核心
 
@@ -71,11 +138,61 @@ ngx_cycle_t
 
 ## epoll
 
+在内核中申请了简易文件系统，分为三种操作，create建立一个epoll对象，ctl添加套接字，wait搜集发生事件的连接
+
+每个epoll对象有一个独立的ecentepoll结构体，这个结构体会在内存中创建独立内存，调用ctl添加的事件都会增加到rbr红黑树
+
 ## 定时器
 
-## 处理流程
+Nginx自己实现，时间缓存在内存中
+
+同时提供设置缓存时间的精度的设置
+
+### 红黑树维护
+
+红黑树，由所有定时器时间组成
+
+## 事件框架处理流程
+
+### 建立新链接
+
+1. 调用accept建立新的TCP链接
+2. 设置负载均衡
+3. 从连接池获取ngx_connection_t结构体
+4. 为链接创建内存池
+5. 设置新链接套接字的属性
+6. 将新链接的读事件添加到epoll中监控
+7. 调用ngx_linstening_t结构体的handler方法处理链接（检查available标示位，为0则结束，为1则回到第一步）
+
+### 解决惊群
+
+打开accept_mutex锁
+
+当worker都在休眠状态，这时来了一个连接，激活所有的worker这是不必要的，但激活过程触发了上下文切换，这导致了一定的不必要的消耗
+
+Nginx处理，惊群是由于多个进程监Web端口，Nginx确保同时只有一个worker监听Web端口
+
+### 实现负载均衡
+
+打开accept_mutex锁
+
+当ngx_accept_disabled < 0,不触发负载均衡
+
+当ngx_accept_disabled > 0,进行负载均衡操作，当前进程再处理新连接事件，而是值减一
+
+故Nginx子进程Worker间负载均衡当当前使用连接树达到总连接数的7/8时不再处理
+
+### Post事件队列
+
+将事件添加到队列中
 
 ## 文件异步IO
+
+CPU与I/O，提交异步I/O操作后，进程继续工作，进程空闲后再查看是否完成
+
+ngx_epoll_moudle中异步IO
+
+异步IO事件完成后，句柄处于可用状态，epoll_wait返回ngx_eventfd_event事件后调用ngx_epoll_eventfd_handler处理已经完成的异步IO
 
 # 框架初始化
 
@@ -86,6 +203,13 @@ ngx_cycle_t
 ### server的快速检索
 
 ### location的快速检索
+
+数据结构采用二叉树
+
+为何不用红黑树？
+
+1. location是由nginx.conf读取到的，静态不变
+2. 查找效率低于直接构建的完全平衡的二叉树
 
 ### Http请求的11个处理阶段
 
