@@ -262,7 +262,7 @@ Class文件本质就是一张表
 #### 发生时机
 
 - 执行 anewarray,checkcast,getfield, getstatic, instanceof, invokedynamic, invokeinterface, invokespecial, invokestatic, invokevirtual, Idc, Idc_w, multianewarray, new, putfield, putstatic，操作（这16个操作符号引用的）操字节码指令之前
-- 除invokedynamic指令之外，虚拟机可实现对第一次解析结果进行缓存（运行时常量池中直记录接引用，并将常量标识为已解析状态）
+- 除invokedynamic指令之外，虚拟机可对第一次解析结果进行缓存（运行时常量池中记录直接引用，并将常量标识为已解析状态）
 - Invokedynamic对应的引用称为”动态调用点限定符“（Dynamic Call Site Specifier），程序运行到这条指令时解析
 
 #### 解析针对类型
