@@ -58,3 +58,5 @@ jstack -l 276496
 JConsole
 
 JVisualVM
+
+监控内存使用情况，类加载及实例化情况

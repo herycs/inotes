@@ -335,7 +335,6 @@
 		//internalized string respectively
 	//CMS-remark: 8511K(13696K): 阶段过后的老年代占用及容量
 	//10108K(19840K): 阶段过后的堆占用及容量
-
 [CMS-concurrent-sweep-start]
 [CMS-concurrent-sweep: 0.005/0.005 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
 	//标记已经完成，进行并发清理

@@ -63,5 +63,3 @@ mysqldump --single-transaction获取一致性备份
 ## 二进制日志备份恢复
 
 配置中启用
-
-# 性能调优

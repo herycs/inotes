@@ -2,6 +2,75 @@
 
 # 1.垃圾回收器
 
+G1是逻辑分代，物理不分代，除此之外不仅逻辑分代，而且物理分代
+
+垃圾回收器的发展路线，是随着内存越来越大的过程而演进，从分代算法演化到不分代算法
+
+- Serial算法 几十兆
+- Parallel算法 几个G
+- CMS 几十个G  - 承上启下，开始并发回收 -
+
+JDK诞生 Serial追随 提高效率，诞生了PS，为了配合CMS，诞生了PN，CMS是1.4版本后期引入，CMS是里程碑式的GC，它开启了并发回收的过程，但是CMS毛病较多，因此目前任何一个JDK版本默认是CMS，并发垃圾回收是因为无法忍受STW
+
+1. Serial 年轻代 串行回收
+
+2. PS 年轻代 并行回收
+
+3. ParNew 年轻代 配合CMS的并行回收
+
+4. SerialOld 
+
+5. ParallelOld
+
+6. ConcurrentMarkSweep 老年代 并发的， 垃圾回收和应用程序同时运行，降低STW的时间(200ms)
+
+    CMS问题比较多，所以现在没有一个版本默认是CMS，只能手工指定
+
+    CMS既然是MarkSweep，就一定会有碎片化的问题，碎片到达一定程度，CMS的老年代分配对象分配不下的时候，使用SerialOld 进行老年代回收
+
+    想象一下：
+    PS + PO -> 加内存 换垃圾回收器 -> PN + CMS + SerialOld（几个小时 - 几天的STW）
+
+    几十个G的内存，单线程回收 -> G1 + FGC 几十个G -> 上T内存的服务器 ZGC
+
+    算法：三色标记 + Incremental Update
+
+1. G1(200ms - 10ms)
+    算法：三色标记 + SATB
+2. ZGC (10ms - 1ms) PK C++
+       算法：ColoredPointers + LoadBarrier
+3. Shenandoah
+    算法：ColoredPointers + WriteBarrier
+4. Eplison
+5. PS 和 PN区别的延伸阅读：
+    ▪[https://docs.oracle.com/en/java/javase/13/gctuning/ergonomics.html#GUID-3D0BB91E-9BFF-4EBB-B523-14493A860E73](https://docs.oracle.com/en/java/javase/13/gctuning/ergonomics.html)
+6. 垃圾收集器跟内存大小的关系
+    1. Serial 几十兆
+    2. PS 上百兆 - 几个G
+    3. CMS - 20G
+    4. G1 - 上百G
+    5. ZGC - 4T - 16T（JDK13）
+
+### 常见垃圾回收器组合参数设定：(1.8)
+
+* -XX:+UseSerialGC = Serial New (DefNew) + Serial Old
+    * 小型程序。默认情况下不会是这种选项，HotSpot会根据计算及配置和JDK版本自动选择收集器
+* -XX:+UseParNewGC = ParNew + SerialOld
+    * 这个组合已经很少用（在某些版本中已经废弃）
+    * https://stackoverflow.com/questions/34962257/why-remove-support-for-parnewserialold-anddefnewcms-in-the-future
+* -XX:+UseConc<font color=red>(urrent)</font>MarkSweepGC = ParNew + CMS + Serial Old
+* -XX:+UseParallelGC = Parallel Scavenge + Parallel Old (1.8默认) 【PS + SerialOld】
+* -XX:+UseParallelOldGC = Parallel Scavenge + Parallel Old
+* -XX:+UseG1GC = G1
+* Linux中没找到默认GC的查看方法，而windows中会打印UseParallelGC 
+    * java +XX:+PrintCommandLineFlags -version
+    * 通过GC的日志来分辨
+
+* Linux下1.8版本默认的垃圾回收器到底是什么？
+
+    * 1.8.0_181 默认（看不出来）Copy MarkCompact
+    * 1.8.0_222 默认 PS + PO
+
 ## 1.1 Serial收集器
 
 图示：
