@@ -139,7 +139,19 @@ Range: bytes=0-2000, 4000-6000
 
 ### 常用状态码
 
+#### 1xx
+
+> 100 -> 103
+
+ [100 Continue](https://baike.baidu.com/item/HTTP状态码/5053660#1_1)
+
+ [101 Switching Protocols](https://baike.baidu.com/item/HTTP状态码/5053660#1_2)
+
+[102 Processing](https://baike.baidu.com/item/HTTP状态码/5053660#1_3)
+
 #### 2XX 成功
+
+> 200 -> 207
 
 200 OK
 
@@ -158,6 +170,8 @@ Range: bytes=0-2000, 4000-6000
 
 #### 3XX  重定向
 
+> 300 -> 307
+>
 > 浏览器需要执行某些特殊处理以正确处理请求
 >
 > 返回码为：301,302,303时几乎所有浏览器会将POST改为GET，并删除请求报文内的主体，之后再次发送
@@ -192,6 +206,8 @@ Range: bytes=0-2000, 4000-6000
 
 #### 4XX 客户端错误
 
+> 400 -> 451
+>
 > 客户端是发生错误所在
 
 400 Bad Request
@@ -218,6 +234,8 @@ Range: bytes=0-2000, 4000-6000
 - 服务器拒绝请求，且不打算说明理由时使用
 
 #### 5XX 服务器错误
+
+> 500 -> 510
 
 500 Internal Server Error
 

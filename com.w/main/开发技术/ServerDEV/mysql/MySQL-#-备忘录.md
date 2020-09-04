@@ -102,4 +102,41 @@ analyze table
     mysqldump -h 192.168.1.1 -P 3306 -u root -p db1 > d:\db1.sql
     ```
 
+# 事务
+
+```
+set @@autocommit = 0;
+select @@tx_isolation;
+
+set session transaction isolation level read uncommitted;
+set session transaction isolation level read committed
+set session transaction isolation level repeatable read
+set session transaction isolation level serializable
+
+start transaction;
+
+select * from stus;
+```
+
+# 锁
+
+## 查询请求信息
+
+数据库锁信息
+
+show engine innodb status\G;
+
+show full processlist;
+
+
+
+select * from information_schema.innodb_trx\g;
+
+select * from information_schema.innodb_locks\g;
+
+select * from information_schema.innodb_lock_waits\g;
+
+# 主从注意事项
+
+对于自增长列，InnoDB需要考虑自增长并发情况，对于MyISAM而言是表锁无需考虑并发情况
 

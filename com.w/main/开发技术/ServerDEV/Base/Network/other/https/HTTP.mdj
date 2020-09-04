@@ -2079,21 +2079,6 @@
 												},
 												{
 													"_type": "UMLNoteLinkView",
-													"_id": "AAAAAAFvCFvGiks9ALM=",
-													"_parent": {
-														"$ref": "AAAAAAFvCESN0kg2wO8="
-													},
-													"font": "Arial;13;0",
-													"head": {
-														"$ref": "AAAAAAFvCESN0kg3TGQ="
-													},
-													"tail": {
-														"$ref": "AAAAAAFvCESN0kg3TGQ="
-													},
-													"points": "485:0;485:-20;984:-20;984:404;955:404"
-												},
-												{
-													"_type": "UMLNoteLinkView",
 													"_id": "AAAAAAFvCFvYZEtBFdY=",
 													"_parent": {
 														"$ref": "AAAAAAFvCESN0kg2wO8="
@@ -2340,7 +2325,8 @@
 									"_parent": {
 										"$ref": "AAAAAAFvCESN0kg0u38="
 									},
-									"name": "Role1"
+									"name": "Role1",
+									"type": ""
 								},
 								{
 									"_type": "UMLAttribute",
@@ -2348,7 +2334,8 @@
 									"_parent": {
 										"$ref": "AAAAAAFvCESN0kg0u38="
 									},
-									"name": "Role2"
+									"name": "Role2",
+									"type": ""
 								}
 							]
 						}

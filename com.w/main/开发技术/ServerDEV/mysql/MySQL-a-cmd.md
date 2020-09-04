@@ -114,7 +114,7 @@ alter table sss add constraint age check(age > 0 and age < 40);
 >
 > - cascade		删除引用该列的的其他对象，表上有视图时可以删除
 >
-> - restrict	若被引用拒绝删除，有试图时拒绝删除
+> - restrict	若被引用拒绝删除，有视图时拒绝删除
 >
 > ```sql
 > -- 示例
