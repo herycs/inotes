@@ -124,7 +124,7 @@ audit 和 noaudit
 - audit 设置审计功能
 - noaudit 取消审计功能
 
-## ７.数据加密
+## 7.数据加密
 
 存储加密
 

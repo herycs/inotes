@@ -297,8 +297,6 @@ Java里面线程池的顶级接口是 Executor，不过真正的线程池接口�
 
 照例看一下各个接口的源码：
 
-
-
 ```java
 public interface Executor {
     void execute(Runnable command);

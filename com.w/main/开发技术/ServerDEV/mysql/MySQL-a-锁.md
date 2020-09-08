@@ -1,9 +1,41 @@
 # 锁
 
-> lock与latch
->
-> - latch轻量级锁（mutex互斥锁， rwlock读写锁）
-> - lock面向事务（锁数据库中的对象，表，页和行）
+## 简介
+
+### 为什么要有锁？
+
+为了在并发环境下提供给用户一致的数据读取和修改
+
+### 行级锁开销？
+
+行级锁本身不会增加开销，只有实现本身才会增加开销，而且，InnoDB一个锁和多个锁的开销是相同的。
+
+### MyISAM & InnoDB
+
+InnoDB提供了表锁和行锁
+
+MyISAM提供了表锁，若插入操作在表底部，其也可以提供一定的并发性能
+
+### InnoDB & SQL Server
+
+SQL Server 提供了锁，但存在锁升级，这种情况下开销会随着锁的使用增加而增加
+
+InnoDB 提供一致性非锁定读，行级锁（行锁不会升级，故没有额外的开销）
+
+### lock与latch
+
+latch轻量级锁（mutex互斥锁， rwlock读写锁）
+
+要求锁定时间非常短，目的是为了保证并发情况下的正确性，但未提供死锁检测机制
+
+```mysql
+-- 查看命令, debug版本下系信息更多
+ show engine innodb mutex;
+```
+
+lock面向事务（锁数据库中的对象，表，页和行）
+
+一般仅在事务commit | roolback后释放，具有死锁机制
 
 ## 分类
 
@@ -14,9 +46,10 @@
 
 InnoDB支持多粒度锁定，这种锁定允许事务在行级上的锁和表级上的锁同时存在，为了支持这种多粒度加锁，MySQL提供了意向锁(Intention Lock)
 
-意向锁 Intention Lock
+- 意向锁 Intention Lock
 
-意向锁分为多个层级，意向锁意味着事务希望在更细粒度加锁
+
+意向锁分为多个层级，<u>意向锁意味着事务希望在更细粒度加锁</u>
 
 若以树型结构理解树，那么对于一行记录加(X)锁，分别需要加锁：数据库，表，页（IX），对行记录上行（X）
 
@@ -199,4 +232,37 @@ a	b---------其中a为主键primary key, b为普通键
 对于唯一索引：a 使用record lock锁定记录 a = 5
 
 对于非聚簇索引：b 使用next-key lock锁定 b = （1,3），InnoDB会对下一条索引增加gap lock，所以最终结果是：Lock （1,3]
+
+## 锁状态查看
+
+1.
+
+```mysql
+mysql> select * from information_schema.INNODB_TRX\G;
+*************************** 1. row ***************************
+                    trx_id: 85252
+                 trx_state: RUNNING
+               trx_started: 2020-09-08 11:21:18
+     trx_requested_lock_id: NULL -- 等待锁的事务ID
+          trx_wait_started: NULL -- 事务等待开始的时间
+                trx_weight: 2    -- 事务权重，锁定行数，当发生死锁时选择该值最小的事务进行回滚
+       trx_mysql_thread_id: 18
+                 trx_query: NULL -- 事务运行的SQL
+       trx_operation_state: NULL
+         trx_tables_in_use: 0
+         trx_tables_locked: 1
+          trx_lock_structs: 2
+     trx_lock_memory_bytes: 1136
+           trx_rows_locked: 22
+         trx_rows_modified: 0
+   trx_concurrency_tickets: 0
+       trx_isolation_level: REPEATABLE READ
+         trx_unique_checks: 1
+    trx_foreign_key_checks: 1
+trx_last_foreign_key_error: NULL
+ trx_adaptive_hash_latched: 0
+ trx_adaptive_hash_timeout: 0
+          trx_is_read_only: 0
+trx_autocommit_non_locking: 0
+```
 

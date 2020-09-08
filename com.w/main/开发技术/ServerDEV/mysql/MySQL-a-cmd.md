@@ -432,6 +432,14 @@ alter index <old_name> rename to <new_name>;
 drop index name_;
 ```
 
+## 查询索引
+
+```mysql
+show index from {table_name};
+```
+
+
+
 # 视图
 
 > #### 	视图是加了限制的sql操作,但其实质还是作用于数据库本身数据的

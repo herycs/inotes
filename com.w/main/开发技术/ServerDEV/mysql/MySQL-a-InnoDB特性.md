@@ -1,4 +1,4 @@
-# InnoDB
+# InnoDB特性
 
 > 多线程存储引擎
 

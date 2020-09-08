@@ -143,11 +143,21 @@ Range: bytes=0-2000, 4000-6000
 
 > 100 -> 103
 
- [100 Continue](https://baike.baidu.com/item/HTTP状态码/5053660#1_1)
+ [100 Continue](https://baike.baidu.com/item/HTTP状态码/5053660#1_1) 
 
  [101 Switching Protocols](https://baike.baidu.com/item/HTTP状态码/5053660#1_2)
 
+一般用于协议切换，例如：Http切换为WebSocket
+
+使用http请求头中的Upgrade字段
+
 [102 Processing](https://baike.baidu.com/item/HTTP状态码/5053660#1_3)
+
+用于配合WebDAV分布式文件系统的一些操作
+
+102表示响应在处理中
+
+WebDAV分布式文件系统，支持对Server的文件进行操作
 
 #### 2XX 成功
 
