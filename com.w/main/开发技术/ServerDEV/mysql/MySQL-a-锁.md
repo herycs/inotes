@@ -64,22 +64,42 @@ InnoDB1.0之后，INFORMATION_SCHEMA架构添加，INNODB_TRX，INNODB_LOCKS，I
 
 ### 一致性非锁定读
 
-基于快照进行操作，对于快照数据，没有事务需要对历史数据进行加锁
+在隔离级别：RC & RR下会使用一致性非锁定读
 
-consistent nonlocking read，使用多版本并发控制获取当前执行时间数据库中的行的数据，若正在执行Update或Delete，会获取到一个快照数据（使用undo段实现）
+基于快照进行操作，对于快照数据，因为没有事务需要对历史数据进行加锁
+
+consistent nonlocking read，使用多版本并发控制获取当前执行时间数据库中的行的数据，若正在执行Update或Delete，并不会等待这个锁接触，而是会获取到一个快照数据（使用undo段实现）
 
 不同事务隔离级别情况下READ COMMITTED，REPEATABLE READ情况下使用非锁定一致性读，但快照要求不一样
 
 - READ COMMITTED------最新快照
 - REPEATABLE READ------事务开始的行数据版本
 
-### 快照数据
+### 一致性锁定读
 
-Read Committed 非一致性锁定读，总是读取最新数据，若行被锁定，则读取最新快照
+InnoDB提供的操作
 
-Repeatable Read 快照数据，非一致性读总是读取事务开始时的版本
+- select...for update---加X锁，其他事物不可加任何锁
 
-## 自增长&锁
+- select...lock in share mode------加S锁，其他事物可以加S锁，加X锁时会被阻塞
+
+- 锁定表
+
+    > 对一个事务使用表锁定机制时，会隐式的提交所有事务，开始一个事务时会解开所有表锁定，事务表中@@autocommit必须设定为0，否则会在执行后立刻释放表锁定，会造成死锁
+
+    ```sql
+    lock tables tbale_name[as alias]{read[local]|[low_priority]write}
+    ```
+
+- 解锁表
+
+    ```sql
+    unlock tables;
+    ```
+
+## 
+
+### 自增长&锁
 
 ```mysql
 select Max from t for update;
@@ -106,34 +126,15 @@ v5.1.22开始，提供一种轻量级互斥量的自增长实现机制
 
 *InnoDB中自增长列必须是索引，且是第一个索引，否则出错*
 
-## 外键&锁
+MyISAM则无这种限制
 
-对于外键，若没有加索引，则会自动增加一个索引避免表锁
+### 外键&锁
 
-对于外键值的插入和更新，首先查询父表中的记录，及select父表
+自动创建索引：对于外键，若没有加索引，则会自动增加一个索引避免表锁
 
-采用一致性锁定读会发生数据不一致问题，使用select...lock in share mode
+修改流程：对于外键值的插入和更新，首先查询父表中的记录，及select父表
 
-## 显示加锁：一致性锁定读
-
-InnoDB提供的操作
-
-- select...for update---加X锁，其他事物不可加任何锁
-- select...lock in share mode------加S锁，其他事物可以加S锁，加X锁时会被阻塞
-
-- 锁定表
-
-    > 对一个事务使用表锁定机制时，会隐式的提交所有事务，开始一个事务时会解开所有表锁定，事务表中@@autocommit必须设定为0，否则会在执行后立刻释放表锁定，会造成死锁
-
-    ```sql
-    lock tables tbale_name[as alias]{read[local]|[low_priority]write}
-    ```
-
-- 解锁表
-
-    ```sql
-    unlock tables;
-    ```
+采用一致性非锁定读会发生数据不一致问题，使用select...lock in share mode
 
 ## 算法
 
@@ -141,15 +142,55 @@ InnoDB提供的操作
 - Gap Lock：间隙锁，不包含记录本身
 - Next-Key Lock：Gap Lock+ Record Lock实现对于一个范围的加锁，并锁定记录本身
 
-Record Lock：单记录锁总是锁索引记录，若没有索引，则使用隐式主键锁定
+### Record Lock
 
-Next-Key Lock：锁定区间，技术称为Next-Key Locking，是谓词锁的一种改进，设计目的为了解决Phantom Problem(幻像问题)
+单记录锁总是锁索引记录，若没有索引，则使用隐式主键锁定
+
+### Next-Key Lock
+
+> Gap + Record
+
+锁定区间，技术称为Next-Key Locking，是谓词锁的一种改进，设计目的为了解决Phantom Problem(幻像问题)
 
 若索引有3个值：3，7，9，则锁定区间是(-oo, 3], (3, 7], (7, 9], (9, +oo)
 
 对于唯一键的锁定，next-key会降级record key
 
-Previous-Key Locking：以上述为例，锁的区间是：(-oo, 3), [3, 7), [7, 9), [9, +oo)
+示例：
+
+```mysql
+-- 数据库表如下
+mysql> select * from z;
++----+------+
+| a  | b    |
++----+------+
+|  1 |    1 |
+|  3 |    1 |
+|  5 |    3 |
+|  7 |    6 |
+| 10 |    8 |
++----+------+
+-- 事务A
+mysql> select * from z where b = 3 for update; 
+-- 对索引b = 3，加锁 =》1.锁主键 a = 5的记录，2.锁辅助索引b = （1,3） （3,6）
++---+------+
+| a | b    |
++---+------+
+| 5 |    3 |
++---+------+
+-- 事务B
+mysql> insert into z(a, b) value(6, 5); -- 结果会阻塞住，以为非聚簇索引加锁同时也锁定了，（3,6）
+mysql> insert into z(a,b) value(6,6);
+Query OK, 1 row affected (0.00 sec)
+```
+
+
+
+### Previous-Key Locking
+
+> Record + Gap
+
+以上述为例，锁的区间是：(-oo, 3), [3, 7), [7, 9), [9, +oo)
 
 ## 锁问题
 
@@ -240,14 +281,39 @@ a	b---------其中a为主键primary key, b为普通键
 ```mysql
 mysql> select * from information_schema.INNODB_TRX\G;
 *************************** 1. row ***************************
-                    trx_id: 85252
+                    trx_id: 85255
+                 trx_state: LOCK WAIT
+               trx_started: 2020-09-08 15:32:04
+     trx_requested_lock_id: 85255:857:3:2
+          trx_wait_started: 2020-09-08 15:36:20
+                trx_weight: 2
+       trx_mysql_thread_id: 21
+                 trx_query: select * from user for update
+       trx_operation_state: starting index read
+         trx_tables_in_use: 1
+         trx_tables_locked: 1
+          trx_lock_structs: 2
+     trx_lock_memory_bytes: 1136
+           trx_rows_locked: 2
+         trx_rows_modified: 0
+   trx_concurrency_tickets: 0
+       trx_isolation_level: REPEATABLE READ
+         trx_unique_checks: 1
+    trx_foreign_key_checks: 1
+trx_last_foreign_key_error: NULL
+ trx_adaptive_hash_latched: 0
+ trx_adaptive_hash_timeout: 0
+          trx_is_read_only: 0
+trx_autocommit_non_locking: 0
+*************************** 2. row ***************************
+                    trx_id: 283648230201136
                  trx_state: RUNNING
-               trx_started: 2020-09-08 11:21:18
-     trx_requested_lock_id: NULL -- 等待锁的事务ID
-          trx_wait_started: NULL -- 事务等待开始的时间
-                trx_weight: 2    -- 事务权重，锁定行数，当发生死锁时选择该值最小的事务进行回滚
-       trx_mysql_thread_id: 18
-                 trx_query: NULL -- 事务运行的SQL
+               trx_started: 2020-09-08 15:31:57
+     trx_requested_lock_id: NULL
+          trx_wait_started: NULL
+                trx_weight: 2
+       trx_mysql_thread_id: 20
+                 trx_query: NULL
        trx_operation_state: NULL
          trx_tables_in_use: 0
          trx_tables_locked: 1
@@ -264,5 +330,47 @@ trx_last_foreign_key_error: NULL
  trx_adaptive_hash_timeout: 0
           trx_is_read_only: 0
 trx_autocommit_non_locking: 0
+2 rows in set (0.00 sec)
+```
+
+2.lock并非十分可信，用户使用范围查找时，可能只返回第一行的主键值，若当前资源被锁定住了，又由于缓存池用量原因被刷新出缓存，这时执行结果中lock_data的值就可能是null，InnoDB并不会再从磁盘刷新一次
+
+```mysql
+mysql> select * from information_schema.INNODB_LOCKS\G;
+*************************** 1. row ***************************
+    lock_id: 85255:857:3:2
+lock_trx_id: 85255
+  lock_mode: X
+  lock_type: RECORD
+ lock_table: `school`.`user`
+ lock_index: PRIMARY
+ lock_space: 857
+  lock_page: 3
+   lock_rec: 2
+  lock_data: 1
+*************************** 2. row ***************************
+    lock_id: 283648230201136:857:3:2
+lock_trx_id: 283648230201136
+  lock_mode: S
+  lock_type: RECORD
+ lock_table: `school`.`user`
+ lock_index: PRIMARY
+ lock_space: 857
+  lock_page: 3
+   lock_rec: 2
+  lock_data: 1
+2 rows in set, 1 warning (0.00 sec)
+```
+
+3.
+
+```mysql
+mysql> select * from information_schema.INNODB_LOCK_WAITS\G;
+*************************** 1. row ***************************
+requesting_trx_id: 85255
+requested_lock_id: 85255:857:3:2
+  blocking_trx_id: 283648230201136
+ blocking_lock_id: 283648230201136:857:3:2
+1 row in set, 1 warning (0.00 sec)
 ```
 

@@ -8,6 +8,7 @@
     public class DoubleCheckedLocking {
         private DoubleCheckedLocking doubleCheckedLocking;
         //    双重检查锁（存在问题）
+        private DoubleCheckedLocking() {}
         public DoubleCheckedLocking getInstance2(){
             if (doubleCheckedLocking == null){
                 synchronized (DoubleCheckedLocking.class){
