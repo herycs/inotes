@@ -32,9 +32,11 @@ ACID
 
 - 将innodb_locks_unsafe_for_binlog = 1可在二进制为statement下使用read committed
 
-### read repeated(默认) - 幻读（MVCC解决）
+### read repeated(默认) - 幻读（next-key解决）
 
 幻读：同1事务下，同意操作，不同结果（第二次读出第一次不存在的行）
+
+MVCC解决不可重复读
 
 next-key lock -> 解决
 
