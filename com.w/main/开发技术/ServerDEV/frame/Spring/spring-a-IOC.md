@@ -6,6 +6,10 @@ Inversion of Control 控制反转，设计思想，将对象交由容器控制
 
 通过IOC实现解耦，同时也在一定程度上提高了可测试性
 
+定义了IOC容器最基本，最底层的规范
+
+使用&前缀区分用户是想要获取工厂还是对象
+
 ## 基本组件
 
 ### BeanFactory
@@ -138,23 +142,7 @@ doClose()//销毁前的资源关闭
 
 ## 相关技术点
 
-## Bean
-
-
-
 ## BeanFactory
-
-> DefaultListableBeanFactory
->
-> 包含所有IOC重要功能
-
-## BeanFactory
-
-定义了IOC容器最基本，最底层的规范
-
-使用&前缀区分用户是想要获取工厂还是对象
-
-### 方法
 
 getBean()
 
@@ -239,23 +227,3 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 }
 ```
-
-### 载入
-
-构建BeanDefinition（POJO对象在IOC容器中的抽象）
-
-过程
-
-
-
-### 注册
-
-向IOC容器注册BeanDefinition
-
-## IOC初始化&依赖注入
-
-Spring中的Bean定义的初始化和Bean的依赖注入是两个过程
-
-一般IOC的初始化不包括Bean的依赖注入，依赖注入发生于第一次获取Bean时
-
-lazyinit属性定义后，Bean会在IOC完成初始化之前完成依赖注入
