@@ -97,8 +97,6 @@ InnoDB提供的操作
     unlock tables;
     ```
 
-## 
-
 ### 自增长&锁
 
 ```mysql

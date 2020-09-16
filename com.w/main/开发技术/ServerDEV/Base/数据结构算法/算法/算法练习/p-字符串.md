@@ -8,9 +8,7 @@
 
 以首字符分类
 
-
-
- [剑指 Offer 45.最长不含重复字符的子字符串](https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/)
+####  [剑指 Offer 45.最长不含重复字符的子字符串](https://leetcode-cn.com/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/)
 
 Hash存储出现过的字符索引，用于更新左边界
 
@@ -31,7 +29,7 @@ class Solution {
 }
 ```
 
-#### [剑指 Offer 45. 把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/)
+#### [剑指 Offer 45.把数组排成最小的数](https://leetcode-cn.com/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/)
 
 ```java
 class Solution {
