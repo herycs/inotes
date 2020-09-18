@@ -1,4 +1,4 @@
-# AOP
+# SpringAOP
 
 Aspect-Oriented Programming
 
@@ -54,3 +54,102 @@ public interface Pointcut {
 }
 ```
 
+## Advisor
+
+Advice-通知器-Pointcut
+
+## AOP的设计与实现
+
+### 代理对象
+
+```java
+ProxyFactoryBean//配置与调用此类完成代理对象生成，封装了主要代理对象的生成
+```
+
+继承自ProxyCofig类，其他的ProxyFactoryxx类实质上是对ProxyFactoryBean的调用的封装
+
+### 配置ProxyFactoryBean
+
+1. 定义Advisor
+2. 定义ProxyFactoryBean
+3. 定义Target
+
+### ProxyFactoryBean生成FactoryBean
+
+```java
+FactoryBean-》getObject()//入口
+    1.对通知器链进行初始化，（基于配置文件读取一系列的拦截器）
+```
+
+上述过程完成，则为代理对象生成准备好了环境
+
+代理对象有两类，Singleton和Prototype
+
+```java
+public Object getObject() throws BeansException {
+    initializeAdvisorChain();//初始化通知器链，实现内部有一个表示位advisorChainInitialized，若标志为初始化完成-》直接返回
+    if (isSingleton()) {//处理单例类
+        return getSingletonInstance();
+    }
+    else {//处理原型类
+        if (this.targetName == null) {
+            logger.info("Using non-singleton proxies with singleton targets is often undesirable. " +
+                        "Enable prototype proxies by setting the 'targetName' property.");
+        }
+        return newPrototypeInstance();
+    }
+}
+```
+
+```java
+getSingletonInstance()//获取单例对象,ProxyFactoryBean生成AopProxy对象的调用入口
+```
+
+Spring利用AopProxy对象将代理对象的实现和框架其他部分区分开，该接口有两个具体之类
+
+```java
+Cglib2AopProxy
+JdkDynamicProxy
+```
+
+代理对象生成
+
+```java
+ProxyFactoryBean基类AdvisorSupport中借助AopProxyFactory生成AopProxyFactory
+	DefaultAopProxyFactory-》选择具体的Aop对象生成
+    	->JdkDynamicAopProxy
+    	->CglibAopProxy
+```
+
+```java
+// DefaultAopFactory
+public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+    if (!IN_NATIVE_IMAGE &&
+        (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config))) {
+        Class<?> targetClass = config.getTargetClass();
+        if (targetClass == null) {
+            throw new AopConfigException("TargetSource cannot determine target class: " +
+                                         "Either an interface or a target is required for proxy creation.");
+        }
+        // 接口类，则使用Jdk动态代理
+        if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {
+            return new JdkDynamicAopProxy(config);
+        }
+        // cglib生成
+        return new ObjenesisCglibAopProxy(config);
+    }
+    else {
+        return new JdkDynamicAopProxy(config);
+    }
+}
+```
+
+生成过程中如下：
+
+1. AdvisedSupport中取得目标对象
+2. 检查目标对象的配置
+3. 基于配置选定生成方式
+
+### 生成代理
+
+Cglib需要指定ClassLoader
