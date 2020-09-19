@@ -150,6 +150,62 @@ public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException 
 2. 检查目标对象的配置
 3. 基于配置选定生成方式
 
-### 生成代理
+### JDK生成AopProxy
+
+```java
+JdkDynamicAopProxy
+```
+
+### Cglib生成AopProxy
 
 Cglib需要指定ClassLoader
+
+```java
+Cglib2AopProxy
+```
+
+## 拦截器
+
+### 设计原理
+
+AOP生成代理对象时已将拦截器设置到到具体的代理对象中去了
+
+### JDK拦截
+
+```java
+JdkDynamicAopProxy-》invoke
+```
+
+### Cglib拦截
+
+```java
+DynamicAdvisedInterceptor
+```
+
+### 目标对象方法调用
+
+调用过程：调用-》拦截器（如果有）-》具体方法
+
+```java
+AopUtils-》AopUtils.invokeJoinpointUsingReflection()//实现
+```
+
+### 拦截器链的调用
+
+```java
+ReflectiveMethodInvocation-》proceed()//调用过程中对于拦截器的选定依据matches方法进行判断
+```
+
+### 拦截器的加入
+
+这些拦截器都是维护在一个List中的拦截器类
+
+对于拦截器类的获取有对应的拦截器链工厂
+
+```java
+DefaultAdvisorAdapterRegister
+```
+
+### AOP高级特性
+
+运行时热替换
