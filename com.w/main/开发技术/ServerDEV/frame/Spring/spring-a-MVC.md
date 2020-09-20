@@ -46,3 +46,4 @@ hadlerMapping封装的HandlerExecutionChain//Http 请求与 Controller 的联系
 
 1. 接收到请求
 2. 通过匹配请求URL从HandlerMapping中拿到HandlerExecutionChain，HandlerExecutionChain中封装了处理请求的Controller
+3. 得到ModelAndView后，DispatcherServlet将获得的视图数据模型交给特定的视图对象
