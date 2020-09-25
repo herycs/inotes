@@ -11,8 +11,6 @@
 
 - 以下是项目一级目录及个文件
 
-  
-
 - 项目根目录下文件及其结构
 
 # 3.开发结构
@@ -86,43 +84,37 @@
     </style>
     ```
 
-    
-
   - index.html基础展示，这里基本只写一个展示框架，详细的文件等信息通过加载对应的组件
 
     示例：
 
     ```js
-    <html>
-    
-    <head>
+  <html>
+    	<head>
             <meta charset="UTF-8">
-            <meta name="viewport"
-                    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+            <meta 
+    			name="viewport content="width=device-width, 
+                    initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
             <title>主页</title>
-    </head>
-    
-    <body style="background-color:white;">
-            <div id="app"></div>
-    </body>
-    
+    	</head>
+    	<body style="background-color:white;">
+            	<div id="app"/></div>
+    	</body>
     </html>
     ```
-
     
-
   - main.js：这里写项目主js, 同时配置并加载vue，将第三方组件及注册进veu
-
+  
     将页面的div交给此vue
 
     示例文件：
 
     ```js
-    //入口文件
+  //入口文件
     import Vue from 'vue'
-    
+  
     //路由
-    //导入路由
+  //导入路由
     import VueRouter from 'vue-router'
     //安装路由
     Vue.use(VueRouter)
@@ -164,32 +156,35 @@
             router
     })
     ```
-
+  
     
-
+  
   -  router.js：文件中写路由配置信息
-
+  
     示例：
 
     ```js
-    import VueRouter from 'vue-router'
+  import VueRouter from 'vue-router'
     
-    //导入路由组件
-    import HomeContainer from './components/tabbar/HomeContainer.vue'
-    import SearchContainer from './components/tabbar/SearchContainer.vue'
-    
-    var router = new VueRouter({
-            routes:[
-                    {path:'/', redirect:'/home'},
-                    {path:'/home', component:HomeContainer},
-                    {path:'/search', component:SearchContainer}
-            ],
-            //覆盖默认高亮类
-            linkActiveClass:'mui-active'
-    })
-    
-    //向外部提供路由接口
-    export default router
+    ```
+  
+    ```js
+  //导入路由组件
+  import HomeContainer from './components/tabbar/HomeContainer.vue'
+  import SearchContainer from './components/tabbar/SearchContainer.vue'
+  
+  var router = new VueRouter({
+      routes:[
+          {path:'/', redirect:'/home'},
+          {path:'/home', component:HomeContainer},
+          {path:'/search', component:SearchContainer}
+      ],
+      //覆盖默认高亮类
+      linkActiveClass:'mui-active'
+  })
+  
+  //向外部提供路由接口
+  export default router
     ```
 
 # 4.其它范例文件
