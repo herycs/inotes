@@ -84,3 +84,10 @@ class Solution {
 }
 ```
 
+#### [5. 最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)
+
+```java
+//动态规划
+//Manacher算法
+```
+

@@ -310,15 +310,15 @@
   -- 进入解压目录
   cd nginx-1.8.0
   -- 键入以下命令，创建makefile文件
-  	./configure \
   	-- 下面的位置需要写成你的nginx安装路径
+  	-- 下面配置的是临时文件目录
+  	./configure \
       --prefix=/usr/local/nginx \
       --pid-path=/var/run/nginx/nginx.pid \
       --lock-path=/var/lock/nginx.lock \
       --error-log-path=/var/log/nginx/error.log \
       --http-log-path=/var/log/nginx/access.log \
       --with-http_gzip_static_module \
-      -- 下面配置的是临时文件目录
       --http-client-body-temp-path=/var/temp/nginx/client \
       --http-proxy-temp-path=/var/temp/nginx/proxy \
       --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
