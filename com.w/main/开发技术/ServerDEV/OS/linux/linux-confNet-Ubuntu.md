@@ -63,7 +63,15 @@
   sudo ifconfig eth0 up
   ```
 
-## 镜像
+## 配置网卡
+
+获取UUID
+
+```shell
+ uuidgen eth1
+```
+
+
 
 ### 资源
 
