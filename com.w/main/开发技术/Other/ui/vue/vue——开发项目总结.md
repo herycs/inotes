@@ -159,32 +159,34 @@
   
     
   
-  -  router.js：文件中写路由配置信息
+  - router.js：文件中写路由配置信息
   
     示例：
 
     ```js
-  import VueRouter from 'vue-router'
+    import VueRouter from 'vue-router'
     
     ```
   
     ```js
-  //导入路由组件
-  import HomeContainer from './components/tabbar/HomeContainer.vue'
-  import SearchContainer from './components/tabbar/SearchContainer.vue'
+    //导入路由组件
+    import HomeContainer from './components/tabbar/HomeContainer.vue'
+    import SearchContainer from './components/tabbar/SearchContainer.vue'
+    ```
   
-  var router = new VueRouter({
-      routes:[
-          {path:'/', redirect:'/home'},
-          {path:'/home', component:HomeContainer},
-          {path:'/search', component:SearchContainer}
-      ],
-      //覆盖默认高亮类
-      linkActiveClass:'mui-active'
-  })
-  
-  //向外部提供路由接口
-  export default router
+    ```js
+    var router = new VueRouter({
+        routes:[
+            {path:'/', redirect:'/home'},
+            {path:'/home', component:HomeContainer},
+            {path:'/search', component:SearchContainer}
+        ],
+        //覆盖默认高亮类
+        linkActiveClass:'mui-active'
+    })
+    
+    //向外部提供路由接口
+    export default router
     ```
 
 # 4.其它范例文件
@@ -285,7 +287,6 @@
   }
   ```
 
-  
 
 # 5.开发结束
 

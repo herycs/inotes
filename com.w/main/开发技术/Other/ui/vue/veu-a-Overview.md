@@ -1,5 +1,13 @@
 # Overview
 
+## MVVM模式
+
+model view  viewModel
+
+- 文件中temple 就是view
+- new Vue 就是ViewModel
+- Model就是\<javascript>的数据
+
 ## 认识
 
 目录结构
