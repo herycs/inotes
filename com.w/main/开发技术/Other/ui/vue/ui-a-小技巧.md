@@ -50,3 +50,38 @@ methods: {
 
 1. 配置router.js中路由路径为 （/page2/:id）
 2. 跳转页获取参（created() { this.iid = this.$route.params.id}）
+
+## 父子组件传参
+
+```vue
+<span @click="handleClick">
+    {{item}}
+  </span>
+```
+
+### 父-》子
+
+```vue
+props: {
+    title:{
+        type: String,
+        	default:''
+        },
+        list: {
+            type: Array,
+            default: () => []
+        }
+}
+```
+
+### 子-》父
+
+```vue
+methods:{
+    handleClick(){
+        console.log('child')
+        this.$emit('aaa')
+    }
+}
+```
+
