@@ -1,5 +1,19 @@
 # Overview
 
+## 模板语法
+
+- data
+
+- 模板中直接嵌套js代码
+
+- 指令v-html, v-on, v-bind
+
+    class 与 style 绑定 三种方式
+
+- 计算属性
+
+- 过滤器
+
 ## MVVM模式
 
 model view  viewModel
