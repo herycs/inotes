@@ -172,7 +172,7 @@ docker run -p 3306:3306 --name itaobao_mysql \
 docker run -di --name=itaobao_resdis -p 6379:6379 redis
 ```
 
-#### redis
+#### MongoDB
 
 ```shell
 //mongo
