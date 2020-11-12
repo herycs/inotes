@@ -44,7 +44,7 @@ cat /var/spool/cron/root
 
 Minute Hour Day Month Dayofweek command
 
-分钟 小时 天 月 天每星期 命令
+秒 分钟 小时 天 月 天每星期 命令
 
 每个字段代表的含义及取值范围如下：
 
