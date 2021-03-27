@@ -1,5 +1,71 @@
 # 注解
 
+### 类
+
+@Bean--------声明为Bean类
+
+@Component----------声明类为结构类
+
+@Scope("xxx")--------声明类的作用域
+
+@Lazy(true)---------设置类为懒加载
+
+@DependsOn("xxx")-----------依赖于别的类
+
+### 方法
+
+@Lookup----------------被标注的方法将被重写
+
+## SpringMVC
+
+@Controller
+
+- 使用它标记的类就是一个SpringMVC Controller 对象。分发处理器将会扫描使用了该注解的类的方法，并检测该方法是否使用了@RequestMapping 注解。@Controller 只是定义了一个控制器类，而使用@RequestMapping 注解的方法才是真正处理请求的处理器。
+
+@RequestMapping
+
+- RequestMapping是一个用来处理请求地址映射的注解，可用于类或方法上。
+    - value:指定请求的实际地址
+    - method： 指定请求的method类型， GET、POST、PUT、DELETE等
+    - consumes： 指定处理请求的提交内容类型（Content-Type），例如application/json, text/html
+    - produces:  指定返回的内容类型，仅当request请求头中的(Accept)类型中包含该指定类型才返回
+    - params： 指定request中必须包含某些参数值是，才让该方法处理
+    - headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求
+
+@Resource和@Autowired
+
+- @Resource和@Autowired都是做bean的注入时使用
+
+- @Resource并不是Spring的注解，它的包是javax.annotation.Resource，需要导入，但是Spring支持该注解的注入
+
+- 区别：
+
+    @Autowired按照类型（byType）装配依赖对象
+
+    @Resource默认按照ByName自动注入
+
+@PathVariable
+
+- 取出uri模板中的变量作为参数
+
+@RequestParam
+
+@ResponseBody
+
+- 将Controller的方法返回的对象，通过适当的HttpMessageConverter转换为指定格式后，写入到Response对象的body数据区
+
+@CookieValue
+
+## 简要分类
+
+1.值：单一值@Value("")，引用值@Autowired ｜ @Qualifier("名称") ｜@Resource("名称"）
+
+2.类：@Component ｜ @Repository ：dao ｜ @Servic：service层 ｜ @Controller：web层
+
+4.生命周期：初始化@PostConstruct ｜ 销毁@PreDestroy
+
+5.作用域：@Scope("prototype") 
+
 ## Bean
 
 ### 声明为Bean

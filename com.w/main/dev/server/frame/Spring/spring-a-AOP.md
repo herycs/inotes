@@ -1,5 +1,23 @@
 # SpringAOP
 
+## 通知
+
+- 前置通知
+- 后置通知
+- 环绕通知
+- 返回通知之后
+- 抛出通知
+
+## 代理
+
+官方文档指出：Spring AOP默认将标准JDK动态代理用于AOP代理。默认情况下，如果业务对象未实现接口，则使用CGLIB。
+
+## 关于AspectJ
+
+SpringAOP和AspectJ都是----------AOP思想的实现
+
+但SpringAOP的使用语法反人类，，，于是借鉴了AspectJ的语法风格
+
 Aspect-Oriented Programming
 
  Aspect是一种新的模块化机制，用来描述分散在对象，类或函数中的横切点关注。从关注点分离出横切关注点是面向切面的程序设计核心概念。
@@ -7,6 +25,8 @@ Aspect-Oriented Programming
 让算尽可能靠近数据
 
 面向对象可以很好的组织代码，也可以很好的通过继承实现复用，但总是有功能重复的代码，且需要用在不同的地方
+
+## 概览
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200917231938318.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70#pic_center)
 

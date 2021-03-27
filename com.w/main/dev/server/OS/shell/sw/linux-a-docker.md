@@ -175,7 +175,7 @@ docker run -di --name=itaobao_resdis -p 6379:6379 redis
 #### MongoDB
 
 ```shell
-//mongo
+// mongo
 mkdir -p /usr/mongo/data/db
 docker run -di --name=itaoabo_mongo -p 27017:27017 mongo
 docker run -di --name=itaoabo_mongo -v /usr/mongo/data/db:/data/db -p 27017:27017 mongo
@@ -184,9 +184,9 @@ docker run -di --name=itaoabo_mongo -v /usr/mongo/data/db:/data/db -p 27017:2701
 #### es
 
 ```shell
-//es
+// es
 docker run -dit --name=itaobao_es -p 9200:9200 -p 9300:9300 elasticsearch:5.6.8
-//es-head
+// es-head
 docker run -di --name=itaoabo_head -p 9100:9100 mobz/elasticsearch-head:5
 ```
 
@@ -199,7 +199,7 @@ docker run -di --name=itaobao_mq -p 5671:5671 -p 5672:5672 -p 4369:4369 -p 15671
 #### registry
 
 ```shell
-//registry
+// registry
 docker run -di --name=itaobao_registry -p 5000:5000 registry
 docker run -di --name=itaobao_registry -v /var/lib/registry:~/registry/data -p 5000:5000 registry
 ```

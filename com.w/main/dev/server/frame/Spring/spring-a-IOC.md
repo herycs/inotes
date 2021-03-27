@@ -1,5 +1,25 @@
 # IOC
 
+> 控制反转
+
+## 基础
+
+### 代码基础
+
+在`org.springframework.beans`和`org.springframework.context`包中的内容就是IOC的基础
+
+Spring对象的创建使用的是**BeanFactory**，它提供了配置框架和基本功能
+
+**ApplicationContext**是BeanFactory的子接口，在BeanFactory提供的和框架配合的基础功能上增加了更多的功能支持
+
+## IOC执行基础
+
+IOC依据用户提供的**配置数据**对基础的**POJO类**进行加工最终得到了完整的配置系统
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200707164542468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMDcwMTc5,size_16,color_FFFFFF,t_70)
+
+`ApplicationContext`是对内维护bean定义以及相互依赖的注册表的高级工厂的接口，对外为用户提供了Bean对象的访问和管理
+
 ## 认识
 
 Inversion of Control 控制反转，设计思想，将对象交由容器控制

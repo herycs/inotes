@@ -74,7 +74,7 @@
   (进入后将光标调整到文件末尾，按i键进入编辑模式[左下角有insert即为进入编辑模式])
   	-- 文档末尾加上以下配置
   #set JDK environment
-  JAVA_HOME=/usr/local/jdk/jdk1.7.0._71
+  JAVA_HOME=/usr/local/base/java/jdk1.8.0_171
   CLASSPATH=.:$JAVA_HOME/lib.tools.jar
   PATH=$JAVA_HOME/bin:$PATH
   export JAVA_HOME CLASSPATH PATH
