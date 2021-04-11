@@ -1,14 +1,16 @@
 # Java
 
-# 特性
+[编码](./java-a-编码)
 
-# 关键字
+[对象大小](./java-a-对象大小.md)
 
-# 数据类型
+[反射 |代理 |注解 |异常](./java-a-反射&代理-注解-泛型-异常.md)
 
-# 枚举
+[接口与抽象](./java-a-接口与抽象.md)
 
-# 泛型
+[枚举](./java-a-枚举.md)
+
+[泛型](./java-a-枚举.md)
 
 [CSDN泛型解释](https://blog.csdn.net/briblue/article/details/76736356)
 
